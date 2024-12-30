@@ -1,1 +1,2 @@
 # TabTracker
+Guitar learning app.
