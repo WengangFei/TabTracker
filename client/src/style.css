@@ -4,6 +4,18 @@
 
 @layer components{
     .btn {
-        @apply bg-red-500 text-white px-1 rounded-md text-sm
+        @apply bg-red-500 text-white px-2 py-1 rounded-md text-sm
     }
 }
+
+@layer base {
+    h1 {
+        @apply text-2xl font-bold
+    }
+}
+
+/* @layer base {
+    body {
+        @apply font-mono
+    }
+} */

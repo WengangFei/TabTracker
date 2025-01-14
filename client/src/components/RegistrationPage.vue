@@ -1,6 +1,6 @@
 <template>
-    <div class="rounded-md m-2 p-6 shadow-md">
-        <p class="text-center">Register Page</p>
+    <div class="rounded-md m-2 p-6 shadow-md shadow-yellow-400">
+        <h1 class="text-center mb-6">Register Page</h1>
         <form @submit.prevent="submitForm">
             <label for="email">Email:</label><br />
             <input 
@@ -33,14 +33,20 @@
                 <p v-if="confirmPasswordError" class="text-red-500 text-sm">Passwords do not match.</p>
                 <br />
             <button 
-                class="btn mx-auto block mt-3" 
+                class="btn mx-auto block mt-3 text-black font-bold" 
                 type="submit" 
                 :disabled="isSubmitDisabled"
-                :class="{'bg-purple-500': !isSubmitDisabled }"
+                :class="{
+                    'bg-purple-500': !isSubmitDisabled,
+                    'bg-yellow-400': isSubmitDisabled
+                    }"
                 >
                 Register
             </button>
         </form>
+        <div class="text-center mt-2 text-blue-600 text-xxs font-bold ">
+            <router-link to="/login">Click here go to login page</router-link>
+        </div>
     </div>
 </template>
 
@@ -96,6 +102,6 @@ const submitForm = async () => {
     //Submit the form data to server via axious post request by register function
     //Return response from server if post request is made success
     const response = await AuthenticationService.register(submitData);
-    console.log('response =>', response);
+    console.log('response =>', response.message);
 }
 </script>

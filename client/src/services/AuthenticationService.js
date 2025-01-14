@@ -2,21 +2,24 @@ import api from "./Api";
 
 const AuthenticationService = {
     login: async (credentials) => {
-        const response = await api.post("/login", credentials);
-        return response.data;
+        try{
+            const response = await api.post("/login", credentials);
+            return response;
+        } catch(error){
+            return error;
+        }
     },
     register: async (credentials) => {
         try {
             const response = await api.post("/register", credentials);
-            return response.data;
+            return response;
         } catch (error) {
-            console.log(error);
+            return error;
         }
-
     },
     logout: async () => {
         const response = await api.post("/logout");
-        return response.data;
+        return response;
     },
 };
 
