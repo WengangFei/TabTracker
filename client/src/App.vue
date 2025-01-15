@@ -16,10 +16,23 @@ const loginAuthStore = useLoginAuthStore();
         Setting
       </router-link>
     </nav>
-    <div class="flex items-center justify-center h-screen">
+    <div class="center">
       <router-view></router-view>
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+  @mixin center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .nav {
+    @include center;
+    height: 100vh;
+  }
+</style>
 
 
