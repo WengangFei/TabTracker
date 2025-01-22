@@ -33,7 +33,7 @@
                     }"
                 >login
             </button>
-            <p v-if="severSentError" class="text-red-500 text-sm mt-2">
+            <p v-if="severSentError" class="text-red-500 text-xxs mt-2">
                 {{ severSentError }}
             </p>
         </form>
@@ -67,7 +67,6 @@ const loginData = reactive({
  })
  
 const loginHandler = async () => {
-    console.log(loginData);
     const responseMessage = await AuthenticationService.login(loginData);
     if(responseMessage.status !== 200){
         console.log(responseMessage.response);
@@ -75,10 +74,13 @@ const loginHandler = async () => {
     }else{
         const loginAuthStore = useLoginAuthStore();
         loginAuthStore.isAuthenticated = true;
+        loginAuthStore.loginUserInfo.email = loginData.email;
+        loginAuthStore.loginUserInfo.password = loginData.password;
         router.push({
             name: 'home',
         });
     }
+    console.log('Login user info =>',responseMessage);
 }
 
 watch(()=> loginData.password, (newVal) => {

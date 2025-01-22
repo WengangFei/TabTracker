@@ -42,6 +42,8 @@ const router = useRouter();
 
 const handleLogout = () => {
   loginAuthStore.isAuthenticated = false;
+  loginAuthStore.loginUserInfo.email = null;
+  loginAuthStore.loginUserInfo.password = null;
   dialog.value = false;
   router.push({
     name: 'login',

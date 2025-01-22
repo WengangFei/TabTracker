@@ -1,27 +1,54 @@
+const bcrypt = require('bcryptjs');
 
-module.exports = (sequelize, DataTypes) => 
-    sequelize.define('User', {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    confirmPassword: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  }, 
+  {
+    tableName: 'users',   
+    modelName: 'User',
+    timestamps: true,
+    defaultScope: {
+      attributes: { exclude: ['password', 'confirmPassword'] },
+    },
+    scopes: {
+      withPassword: {
+        attributes: { include: ['password', 'confirmPassword'] },
       },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+    },
+    hooks: {
+      beforeCreate: (user) => {
+        user.password = bcrypt.hashSync(user.password, 10);
+        user.confirmPassword = bcrypt.hashSync(user.confirmPassword, 10);
       },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false
+      beforeUpdate: (user) => {
+        user.password = bcrypt.hashSync(user.password, 10);
+        user.confirmPassword = bcrypt.hashSync(user.confirmPassword, 10);
       },
-      confirmPassword: {
-        type: DataTypes.STRING,
-        allowNull: false
-      }
-    }, {
-      tableName: 'users',   
-      modelName: 'User',
-      timestamps: true,
-    });
-  
+    },
+  });
+
+  User.prototype.printEmail = function () {
+    console.log('Registered Email =>',this.email);
+  };
+
+  return User;
+}
+    

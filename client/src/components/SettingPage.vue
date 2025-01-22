@@ -1,10 +1,13 @@
 <template>
     <div>
-        setting
+        Change the password
+        <ChangePassword text="Change"/>
     </div>
 </template>
 
 <script setup>
+
+import ChangePassword from './ChangePassword.vue';
 
 </script>
 

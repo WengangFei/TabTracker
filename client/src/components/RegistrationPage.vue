@@ -44,6 +44,9 @@
                 Register
             </button>
         </form>
+        <p v-if="emailExistError" class="text-red-500 text-xxs mt-2">
+                {{ severSentError }}
+        </p>
         <div class="text-center mt-2 text-blue-600 text-xxs font-bold ">
             <router-link to="/login">Click here go to login page</router-link>
         </div>
@@ -54,12 +57,15 @@
 import { ref, reactive, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthenticationService from '../services/AuthenticationService';
+import { useLoginAuthStore } from '../stores/loginAuthStore';
 
 //set the initial status 
 const emailError = ref(false);
 const passwordError = ref(false);
 const confirmPasswordError = ref(false);
 const noBlankSubmit = ref(true);
+const emailExistError = ref(false);
+const severSentError = ref(null);
 
 const route = useRouter();
 
@@ -96,12 +102,22 @@ watch(()=>submitData.confirmPassword, (newVal) => {
 })
 
 const submitForm = async () => {
-    route.push({
-        name: 'home',
-    });
+    
     //Submit the form data to server via axious post request by register function
     //Return response from server if post request is made success
-    const response = await AuthenticationService.register(submitData);
-    console.log('response =>', response.message);
+    const serverResponse = await AuthenticationService.register(submitData);
+    if(serverResponse.status === 409){
+        emailExistError.value = true;
+        severSentError.value = serverResponse.response.data.message;
+
+    }
+    else if(serverResponse.status === 200){
+        const loginAuthStore = useLoginAuthStore();
+        loginAuthStore.isAuthenticated = true;
+        route.push({
+            name: 'home',
+        });
+    }
+    console.log('response =>', serverResponse);
 }
 </script>

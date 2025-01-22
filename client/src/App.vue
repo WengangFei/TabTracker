@@ -10,9 +10,9 @@ const loginAuthStore = useLoginAuthStore();
   <div>
     <nav class="flex space-x-4">
       <LogoutPage v-if="loginAuthStore.isAuthenticated"></LogoutPage>
-      <router-link to="/home">Home</router-link>
-      <router-link to="/about">About</router-link> 
-      <router-link to="/setting" v-if="loginAuthStore.isAuthenticated">
+      <router-link to="/home" active-class="active">Home</router-link>
+      <router-link to="/about" active-class="active">About</router-link> 
+      <router-link to="/setting" v-if="loginAuthStore.isAuthenticated" active-class="active">
         Setting
       </router-link>
     </nav>
@@ -33,6 +33,11 @@ const loginAuthStore = useLoginAuthStore();
     @include center;
     height: 100vh;
   }
+
+  .active {
+  font-weight: bold;
+  color: blue;
+}
 </style>
 
 

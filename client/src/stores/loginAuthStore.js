@@ -3,8 +3,10 @@ import { ref } from "vue";
 
 export const useLoginAuthStore = defineStore("loginAuth", () => {
     const isAuthenticated = ref(false);
+    const loginUserInfo = ref({});
 
     return {
-        isAuthenticated
+        isAuthenticated,
+        loginUserInfo,
     }
 });

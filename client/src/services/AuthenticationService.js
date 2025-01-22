@@ -21,6 +21,14 @@ const AuthenticationService = {
         const response = await api.post("/logout");
         return response;
     },
+    changePassword: async (credentials) => {
+        try {
+            const response = await api.post("/setting", credentials);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    }
 };
 
 export default AuthenticationService;

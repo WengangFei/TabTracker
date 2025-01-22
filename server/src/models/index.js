@@ -3,7 +3,7 @@ const path = require('path');
 const { sequelize, Sequelize } = require('../db/dbConfig');
 
 const db = {};
-
+//use fs and path util tool to create table of all models by using file name
 fs.readdirSync(__dirname)
   .filter(file => file !== 'index.js' && file.endsWith('.js')) // Exclude index.js and non-JS files
   .forEach(file => {
@@ -20,8 +20,6 @@ fs.readdirSync(__dirname)
       console.error(`Error loading model from file ${file}:`, error);
     }
   });
-
-
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
