@@ -4,6 +4,7 @@ const User = userModel(sequelize, Sequelize.DataTypes);
 const bcrypt = require('bcryptjs');
 
 
+
 module.exports = {
     async register (req, res){
         //receive post request data from front

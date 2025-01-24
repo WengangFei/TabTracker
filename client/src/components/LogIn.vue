@@ -86,6 +86,8 @@ const loginHandler = async () => {
 watch(()=> loginData.password, (newVal) => {
     passwordError.value = newVal.length < 6;
 })
+
+
 </script>
 
 <style lang="scss" scoped>

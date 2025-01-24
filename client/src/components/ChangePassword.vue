@@ -67,6 +67,8 @@ import { useLoginAuthStore } from '../stores/loginAuthStore';
 
 const text = defineProps({
     text: String,
+    required: true,
+    default: 'Change Password',
 });
 
 const form = ref(null);

@@ -9,6 +9,7 @@
 
 import ChangePassword from './ChangePassword.vue';
 
+
 </script>
 
 <style lang="scss" scoped>

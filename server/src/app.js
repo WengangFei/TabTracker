@@ -17,7 +17,7 @@ require('./routes')(app);
 //connect to database
 require('./db/dbConfig')
 
-
+//create the data base and start the server
 sequelize.sync().then(
     ()=> {
         app.listen(process.env.PORT || 3000, () => {
