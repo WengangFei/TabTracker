@@ -7,7 +7,7 @@ const loginAuthStore = useLoginAuthStore();
 </script>
 
 <template>
-  <div>
+  <div class="bg-[url(/src/assets/dogPark.png)] bg-center">
     <nav class="flex space-x-4">
       <LogoutPage v-if="loginAuthStore.isAuthenticated"></LogoutPage>
       <router-link to="/home" active-class="active">Home</router-link>
@@ -17,6 +17,14 @@ const loginAuthStore = useLoginAuthStore();
       </router-link>
     </nav>
     <div class="center">
+      <!-- <v-app>
+      
+        <main>
+          <v-container fluid>
+            <router-view></router-view>
+          </v-container>
+        </main>
+      </v-app> -->
       <router-view></router-view>
     </div>
   </div>

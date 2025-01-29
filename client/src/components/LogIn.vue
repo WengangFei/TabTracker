@@ -1,8 +1,7 @@
 <template>
-    <div class="shadow-md shadow-purple-300 rounded-md p-6">
-        <h1 class="text-center">Login Page</h1> <br />
-        <form @submit.prevent="loginHandler">
-            <label for="email">Email:</label><br />
+    <div class="shadow-md shadow-purple-900 rounded-md p-6 m-2 bg-white">
+        <form @submit.prevent="loginHandler" class="text-center">
+            <!-- <label for="email">Email:</label><br /> -->
             <input 
                 type="email" 
                 name="email" 
@@ -10,7 +9,7 @@
                 placeholder="Enter Email" 
                 class="border border-gray-400 rounded-md m-2 p-1" />
             <br />
-            <label for="password">Password:</label><br />
+            <!-- <label for="password">Password:</label><br /> -->
             <input 
                 type="password" 
                 name="password" 
@@ -85,7 +84,7 @@ const loginHandler = async () => {
 
 watch(()=> loginData.password, (newVal) => {
     passwordError.value = newVal.length < 6;
-})
+});
 
 
 </script>

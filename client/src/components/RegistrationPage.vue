@@ -1,6 +1,6 @@
 <template>
-    <div class="rounded-md m-2 p-6 shadow-md shadow-yellow-400">
-        <h1 class="text-center mb-6">Register Page</h1>
+    <div class="rounded-md m-2 p-6 shadow-md shadow-yellow-400 bg-white">
+        <h1 class="text-center mb-6">Register An Account</h1>
         <form @submit.prevent="submitForm">
             <label for="email">Email:</label><br />
             <input 

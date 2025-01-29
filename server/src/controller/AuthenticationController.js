@@ -40,30 +40,36 @@ module.exports = {
     },
 
     async login (req,res){
-        console.log('Login information =>', req.body);                                          
-        //receive login post request data from login page
-        const userName = await User.scope('withPassword').findOne({
-            where: {
-                email: req.body.email
+        try{
+            console.log('Login information =>', req.body);                                          
+            //receive login post request data from login page
+            const userName = await User.scope('withPassword').findOne({
+                where: {
+                    email: req.body.email
+                }
+            });    
+        
+            if(!userName){
+                console.log('User not found!');
+                return res.status(404).send({message: `User ${req.body.email} not found!`});
             }
-        });    
-       
-        if(!userName){
-            console.log('User not found!');
-            return res.status(404).send({message: `User ${req.body.email} not found!`});
-        }
-        //check if password is match the password in DB
-        const usePassword = await bcrypt.compare(req.body.password, userName.password);
+            //check if password is match the password in DB
+            const usePassword = await bcrypt.compare(req.body.password, userName.password);
 
-        if(!usePassword){
-            console.log('User password is incorrect!');
-            return res.status(404).send({message: `User password is incorrect!`});
+            if(!usePassword){
+                console.log('User password is incorrect!');
+                return res.status(404).send({message: `User password is incorrect!`});
+            }
+            console.log('User login info =>',userName.toJSON());
+            res.status(200).send({ 
+                message:`Your login as ${req.body.email} was Success!`,
+                loginInfo: userName.toJSON(),       
+            });
         }
-        console.log('User login info =>',userName.toJSON());
-        res.status(200).send({ 
-            message:`Your login as ${req.body.email} was Success!`,
-            loginInfo: userName.toJSON(),       
-        });
+        catch(err){
+            console.log('User login failed!');
+            return res.status(500).send({message: `User login failed! ${err}`});
+        }
     },
 
     async changePassword(req, res) {
