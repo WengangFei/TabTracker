@@ -2,6 +2,25 @@ const userModel = require('../models/users');
 const { sequelize, Sequelize } = require('../db/dbConfig');
 const User = userModel(sequelize, Sequelize.DataTypes);
 const bcrypt = require('bcryptjs');
+//JWT middleware
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const JWT_SECRET = process.env.JWT_SECRET;
+//Authenticate token
+const authenticateToken = async (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) 
+        return res.sendStatus(401).send({message: 'No token provided!'});
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) 
+            return res.sendStatus(403);
+        console.log('User login info =>',req.user);
+        req.user = user;
+        next();
+    });
+}
+
 
 
 
@@ -61,9 +80,16 @@ module.exports = {
                 return res.status(404).send({message: `User password is incorrect!`});
             }
             console.log('User login info =>',userName.toJSON());
+            //create JWT token when user login
+            const token = jwt.sign(
+                { id: userName.id, email: userName.email },
+                JWT_SECRET,
+                { expiresIn: '24h' }
+            )
             res.status(200).send({ 
                 message:`Your login as ${req.body.email} was Success!`,
-                loginInfo: userName.toJSON(),       
+                loginInfo: userName.toJSON(), 
+                token      
             });
         }
         catch(err){
@@ -118,7 +144,16 @@ module.exports = {
             console.error('Error updating password:', error);
             return res.status(500).send({ message: 'Server error. Please try again later.' });
         }
-    }
+    },
     
+    async home(req, res) {
+        console.log('User visited home page!');
+        res.status(200).send({ message: 'Welcome to the home page!' }); 
+    },
 
+    async about(req, res) {
+        res.status(200).send({ message: 'Welcome to the about page!' }); 
+    },
+    authenticateToken,
+    
 }

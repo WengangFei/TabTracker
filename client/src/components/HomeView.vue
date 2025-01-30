@@ -6,6 +6,8 @@
 </template>
 
 <script setup>
+import { useLoginAuthStore } from '../stores/loginAuthStore';
+const loginAuthStore = useLoginAuthStore();
 
 </script>
 

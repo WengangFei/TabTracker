@@ -1,8 +1,9 @@
 <template>
-    <v-container>
+    <div>
         <!-- Logout Button -->
-        <v-btn 
-        size="small"
+        <v-btn
+        size="x-small"
+        outlined="false"
         class="custom-button"
         @click="dialog = true">
         Logout
@@ -28,7 +29,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-    </v-container>
+    </div>
 </template>
 
 <script setup>
@@ -41,9 +42,7 @@ const loginAuthStore = useLoginAuthStore();
 const router = useRouter();
 
 const handleLogout = () => {
-  loginAuthStore.isAuthenticated = false;
-  loginAuthStore.loginUserInfo.email = null;
-  loginAuthStore.loginUserInfo.password = null;
+  loginAuthStore.logOut();
   dialog.value = false;
   router.push({
     name: 'login',
@@ -54,9 +53,8 @@ const handleLogout = () => {
 <style lang="scss" scoped>
 $primary-color: #3f51b5;
 @mixin baseColor{
-    font-size: xx-small;
+    font-size: x-small;
     font-weight: bold;
-    padding: 5px;
     text-transform: none;
     color: white;
 };
@@ -67,12 +65,14 @@ $primary-color: #3f51b5;
 
     @if $text == 'Logout' {
         @include baseColor;
-        background-color: red;
+        color: white;
     }  
 };
 
 .custom-button {
     @include buttonColor('Logout');
+   border: none !important;
+   background-color: red;
 }
 </style>
   

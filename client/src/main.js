@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import piniaPersist from 'pinia-plugin-persistedstate'
 import './style.css'
 import App from './App.vue'
 import router from './router'
@@ -10,6 +11,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 const pinia = createPinia();
+pinia.use(piniaPersist);
 const app = createApp(App);
 const vuetify = createVuetify({
     components,

@@ -1,10 +1,15 @@
 const AuthenticationController = require('./controller/AuthenticationController');
 const JoiPolicies = require('./controlPolicies/JoiPolicies');
 
+
+
+
 module.exports = (app) => {
-    app.get('/', (req, res) => {
-        res.send({ message:'Server is running...'});
-    });
+    //home page
+    app.get('/home', 
+        AuthenticationController.authenticateToken,
+        AuthenticationController.home
+    );
     // user register
     app.post(
         '/register', 
@@ -18,5 +23,11 @@ module.exports = (app) => {
         JoiPolicies.login,
         AuthenticationController.login);
     //change password
-    app.post('/setting', AuthenticationController.changePassword);
+    app.post('/setting', 
+        AuthenticationController.authenticateToken, AuthenticationController.changePassword);
+    //about page
+    app.get('/about', 
+        AuthenticationController.authenticateToken,
+        AuthenticationController.about
+    );
 }

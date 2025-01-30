@@ -73,8 +73,11 @@ const loginHandler = async () => {
     }else{
         const loginAuthStore = useLoginAuthStore();
         loginAuthStore.isAuthenticated = true;
-        loginAuthStore.loginUserInfo.email = loginData.email;
-        loginAuthStore.loginUserInfo.password = loginData.password;
+        loginAuthStore.loginUserInfo.email = responseMessage.data.email;
+        loginAuthStore.loginUserInfo.password = responseMessage.data.password;
+        loginAuthStore.loginUserInfo.token = responseMessage.data.token;
+        //save token to local storage
+        localStorage.setItem('token', responseMessage.data.token);
         router.push({
             name: 'home',
         });
@@ -86,7 +89,7 @@ watch(()=> loginData.password, (newVal) => {
     passwordError.value = newVal.length < 6;
 });
 
-
+// localStorage.clear(); // Clears all items in localStorage
 </script>
 
 <style lang="scss" scoped>

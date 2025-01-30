@@ -1,6 +1,28 @@
 import api from "./Api";
 
 const AuthenticationService = {
+    home: async () => {
+        try{
+            const response = await api.get("/home",{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            return response;
+        } catch(error){
+            return error;
+        }   
+    },
+
+    about: async () => {
+        try{
+            const response = await api.get("/about");
+            return response;
+        } catch(error){
+            return error;
+        }
+    },
+
     login: async (credentials) => {
         try{
             const response = await api.post("/login", credentials);
