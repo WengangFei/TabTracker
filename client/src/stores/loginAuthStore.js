@@ -16,7 +16,7 @@ export const useLoginAuthStore = defineStore("loginAuth", () => {
         loginUserInfo.token = "";
         
         // Clear token from localStorage
-        localStorage.removeItem("token");
+        localStorage.clear();
     }
 
     return {

@@ -9,7 +9,8 @@ fs.readdirSync(__dirname)
   .forEach(file => {
     try {
       const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-      // Add model to db object using its name
+      // Add each model instance to db object by its file name
+      //all model names are capitalized
       if (model && model.name) {
         db[model.name] = model;
         console.log(`Loaded model { ${model.name} } from file ${file}`);
@@ -23,6 +24,12 @@ fs.readdirSync(__dirname)
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+// Set the associate models
+if(db.User && db.Dog) {
+  db.Dog.belongsTo(db.User, { foreignKey: 'ownerId' });
+  db.User.hasMany(db.Dog, { foreignKey: 'ownerId' });
+}
 
 module.exports = db;
 

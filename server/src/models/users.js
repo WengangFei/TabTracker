@@ -45,9 +45,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
-  User.prototype.printEmail = function () {
-    console.log('Registered Email =>',this.email);
-  };
+  // User.prototype.printEmail = function () {
+  //   console.log('Registered Email =>',this.email);
+  // };
 
   return User;
 }

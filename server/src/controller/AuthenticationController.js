@@ -1,25 +1,46 @@
 const userModel = require('../models/users');
+const dogModel = require('../models/dogs');
 const { sequelize, Sequelize } = require('../db/dbConfig');
 const User = userModel(sequelize, Sequelize.DataTypes);
+const Dog = dogModel(sequelize, Sequelize.DataTypes);
 const bcrypt = require('bcryptjs');
 //JWT middleware
 const jwt = require('jsonwebtoken');
+
 require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
-//Authenticate token
+// Authenticate token
 const authenticateToken = async (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) 
-        return res.sendStatus(401).send({message: 'No token provided!'});
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) 
-            return res.sendStatus(403);
-        console.log('User login info =>',req.user);
-        req.user = user;
-        next();
-    });
-}
+    try {
+        // Extract authorization header and token
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        // Check if token exists
+        if (!token) {
+            console.log('No token provided!');
+            return res.status(401).json({ message: 'No token provided!' });
+        }
+
+        // Verify the token
+        jwt.verify(token, JWT_SECRET, (err, user) => {
+            if (err) {
+                // Token is invalid
+                return res.status(403).json({ message: 'Forbidden', error: err.message });
+            }
+
+            // Successful token verification
+            req.user = user;  // Attach user information to the request object
+            console.log('User authenticated successfully.');
+
+            // Proceed to the next middleware/route handler
+            next();
+        });
+    } catch (err) {
+        // General error handling for unexpected issues
+        console.error('Error during token authentication:', err);
+        return res.status(500).json({ message: `Token authentication failed: ${err.message}` });
+    }
+};
 
 
 
@@ -86,7 +107,7 @@ module.exports = {
                 JWT_SECRET,
                 { expiresIn: '24h' }
             )
-            res.status(200).send({ 
+            return res.status(200).send({ 
                 message:`Your login as ${req.body.email} was Success!`,
                 loginInfo: userName.toJSON(), 
                 token      
@@ -145,6 +166,76 @@ module.exports = {
             return res.status(500).send({ message: 'Server error. Please try again later.' });
         }
     },
+
+    async profile(req, res) {
+        // req.file => {
+        //     fieldname: 'image',
+        //     originalname: '169cf9eb74fb4f5b.jpg',
+        //     encoding: '7bit',
+        //     mimetype: 'image/jpeg',
+        //     destination: '/Users/wenfei/Vue/TabTracker/server/src/uploads/',
+        //     filename: '1738342259867-169cf9eb74fb4f5b.jpg',
+        //     path: '/Users/wenfei/Vue/TabTracker/server/src/uploads/1738342259867-169cf9eb74fb4f5b.jpg',
+        //     size: 3707
+        //   }
+        try{
+          
+            const { name, age, location, introduction } = req.body;
+            const imagePath = req.file ? req.file.path : undefined;  
+            if(!imagePath){
+                console.log('Profile image failed to uploaded!');
+                return res.status(400).send({message: `User profile image failed to uploaded!`});
+            }
+            try{
+                // Save profile information to the database
+                const puppyProfile = await Dog.create({
+                    ownerId: req.user.id,
+                    name,
+                    age,
+                    location,
+                    introduction,
+                    image:imagePath
+                });
+                console.log('User profile created successfully!');
+                return res.status(200).send({
+                    message: `User profile created successfully!`,
+                    puppyProfile,
+                });
+
+            }catch(err){
+                console.log('User profile failed to created!');
+                return res.status(500).send({message: `User profile failed! ${err}`});
+            }
+    
+        }catch(err){
+            console.log('User profile failed to uploaded!');
+            return res.status(500).send({message: `User profile failed! ${err}`});
+        }
+    },
+    async comparePassword(req, res) {
+        try{
+            console.log('Compare password information =>', req.body); 
+            const { currentEmail, password } = req.body;
+            // Find user by email
+            const findUser = await User.scope('withPassword').findOne({
+                where: { email: currentEmail },
+            });
+            //check if password is match the password in DB
+            const usePassword = await bcrypt.compare(password, findUser.password);
+            if(!usePassword){
+                console.log('User password is incorrect!');
+                return res.status(401).send({message: `User password is incorrect!`});
+            }
+           
+            console.log('User password is correct!');
+            return res.status(200).send({message: `User password is correct!`});
+            
+        }
+        catch(err){
+            console.log('User login failed!');
+            return res.status(500).send({message: `User login failed! ${err}`});
+        }
+    },
     
     async home(req, res) {
         console.log('User visited home page!');
@@ -155,5 +246,5 @@ module.exports = {
         res.status(200).send({ message: 'Welcome to the about page!' }); 
     },
     authenticateToken,
-    
+
 }

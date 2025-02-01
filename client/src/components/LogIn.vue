@@ -68,13 +68,13 @@ const loginData = reactive({
 const loginHandler = async () => {
     const responseMessage = await AuthenticationService.login(loginData);
     if(responseMessage.status !== 200){
-        console.log(responseMessage.response);
+        console.log(responseMessage.response.data);
         severSentError.value = responseMessage.response.data.message;
     }else{
         const loginAuthStore = useLoginAuthStore();
         loginAuthStore.isAuthenticated = true;
-        loginAuthStore.loginUserInfo.email = responseMessage.data.email;
-        loginAuthStore.loginUserInfo.password = responseMessage.data.password;
+        loginAuthStore.loginUserInfo.email = responseMessage.data.loginInfo.email;
+        loginAuthStore.loginUserInfo.password = responseMessage.data.loginInfo.password;
         loginAuthStore.loginUserInfo.token = responseMessage.data.token;
         //save token to local storage
         localStorage.setItem('token', responseMessage.data.token);

@@ -1,5 +1,6 @@
 const AuthenticationController = require('./controller/AuthenticationController');
 const JoiPolicies = require('./controlPolicies/JoiPolicies');
+const upload = require('./uploads/multer');
 
 
 
@@ -24,10 +25,20 @@ module.exports = (app) => {
         AuthenticationController.login);
     //change password
     app.post('/setting', 
-        AuthenticationController.authenticateToken, AuthenticationController.changePassword);
+        AuthenticationController.authenticateToken, 
+        AuthenticationController.changePassword);
     //about page
     app.get('/about', 
         AuthenticationController.authenticateToken,
         AuthenticationController.about
+    );
+    //profile page
+    app.post('/profile', 
+        AuthenticationController.authenticateToken,
+        upload.single('image'),
+        AuthenticationController.profile
+    );
+    app.post('/comparePassword', 
+        AuthenticationController.comparePassword
     );
 }

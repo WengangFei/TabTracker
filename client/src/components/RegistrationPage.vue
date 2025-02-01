@@ -115,7 +115,7 @@ const submitForm = async () => {
         const loginAuthStore = useLoginAuthStore();
         loginAuthStore.isAuthenticated = true;
         route.push({
-            name: 'home',
+            name: 'login',
         });
     }
     console.log('response =>', serverResponse);

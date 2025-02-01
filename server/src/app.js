@@ -16,6 +16,8 @@ app.use(cors());
 require('./routes')(app);
 //connect to database
 require('./db/dbConfig')
+//serve the uploaded images
+app.use('/uploads', express.static('uploads'));
 
 
 //create the data base and start the server

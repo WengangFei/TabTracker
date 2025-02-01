@@ -83,8 +83,14 @@ const passwordChangeSuccess = ref(false);
 //     fieldIsDisabled.value = currentPassword.value !== loginUserInformation.loginUserInfo.password;
 // });
 
-watch(currentPassword, (newVal) => {
-    fieldIsDisabled.value = newVal !== loginUserInformation.loginUserInfo.password;
+watch(currentPassword, async (newVal) => {
+    const encryptedPassword = await AuthenticationService.comparePassword({
+        currentEmail: loginUserInformation.loginUserInfo.email,    
+        password: newVal
+    });
+    console.log(encryptedPassword);
+   // user input password correct
+    fieldIsDisabled.value = encryptedPassword.status !== 200;
 });
 
 
