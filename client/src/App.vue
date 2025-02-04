@@ -1,4 +1,5 @@
 <script setup>
+import { watch, ref} from 'vue';
 import LogoutPage from './components/LogoutPage.vue';
 import router from './router';
 import AuthenticationService from './services/AuthenticationService';
@@ -7,12 +8,48 @@ import '@mdi/font/css/materialdesignicons.css';
 
 
 
+
 const loginAuthStore = useLoginAuthStore();
 async function homeMessageFromServer() {
   const result = await AuthenticationService.home();
   console.log('backend sent =>',result.data.message);
 }
-
+//profile update flag
+const profileUpdateFlag = ref(false);
+//image domain prefix
+const imageDomainPrefix = import.meta.env.VITE_DOMAIN_URL;
+//Retrieve user profile information
+watch(()=>loginAuthStore.isAuthenticated,
+  async () => {
+      try{
+        const response = 
+        await fetch(`http://localhost:${import.meta.env.VITE_SERVER_PORT}/api/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        })    
+        const data = await response.json();
+        console.log('first show =>',data.userProfileInformation);
+        // Update properties of userProfileInfo directly
+        loginAuthStore.updateUserProfileInfo(data.userProfileInformation);
+        //updating profile image
+        console.log('profile image =>',loginAuthStore.userProfileInfo.image);
+        loginAuthStore.userProfileInfo.image = loginAuthStore.userProfileInfo.image;
+  
+      }
+      catch(error){
+        console.log('Can not get user profile information from DB.');
+        console.log(error);
+      }
+  }
+);
+//watch database profile change
+watch(() => loginAuthStore.userProfileInfo, () => {
+  console.log('user profile info changed =>',loginAuthStore.userProfileInfo);
+  profileUpdateFlag.value = profileUpdateFlag.value ? false : true;
+},{ deep: true });// deep watch entire loginAuthStore.userProfileInfo object when profile updated
 
 </script>
 
@@ -28,13 +65,14 @@ async function homeMessageFromServer() {
         <v-list v-if="loginAuthStore.isAuthenticated">
           <v-list-item>
             <v-avatar size="45">
-              <img src="https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg" alt="Dog" />
+              <img :src=" imageDomainPrefix + loginAuthStore.userProfileInfo.image " alt="Dog" />
             </v-avatar>
-              <v-list-item-title>Wengang Fei</v-list-item-title>
-              <v-list-item-subtitle>wengangfei@gmail.com</v-list-item-subtitle>
+              <v-list-item-title>{{ 
+                loginAuthStore.userProfileInfo.name || 'Puppy' 
+                }}</v-list-item-title>
+              <v-list-item-subtitle>{{ loginAuthStore.loginUserInfo.email || 'Email' }}</v-list-item-subtitle>
           </v-list-item>
         </v-list>
-
         <v-divider></v-divider>
 
         <v-list density="compact" nav>

@@ -25,11 +25,12 @@ fs.readdirSync(__dirname)
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// Set the associate models
+// Set the associate models between table dogs and table users
 if(db.User && db.Dog) {
   db.Dog.belongsTo(db.User, { foreignKey: 'ownerId' });
   db.User.hasMany(db.Dog, { foreignKey: 'ownerId' });
 }
+
 
 module.exports = db;
 

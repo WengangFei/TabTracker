@@ -30,6 +30,7 @@ const authenticateToken = async (req, res, next) => {
 
             // Successful token verification
             req.user = user;  // Attach user information to the request object
+            console.log('jwt decoded:', req.user);
             console.log('User authenticated successfully.');
 
             // Proceed to the next middleware/route handler
@@ -168,40 +169,73 @@ module.exports = {
     },
 
     async profile(req, res) {
-        // req.file => {
-        //     fieldname: 'image',
-        //     originalname: '169cf9eb74fb4f5b.jpg',
-        //     encoding: '7bit',
-        //     mimetype: 'image/jpeg',
-        //     destination: '/Users/wenfei/Vue/TabTracker/server/src/uploads/',
-        //     filename: '1738342259867-169cf9eb74fb4f5b.jpg',
-        //     path: '/Users/wenfei/Vue/TabTracker/server/src/uploads/1738342259867-169cf9eb74fb4f5b.jpg',
-        //     size: 3707
-        //   }
         try{
-          
             const { name, age, location, introduction } = req.body;
             const imagePath = req.file ? req.file.path : undefined;  
-            if(!imagePath){
-                console.log('Profile image failed to uploaded!');
-                return res.status(400).send({message: `User profile image failed to uploaded!`});
-            }
+            console.log('Profile information =>', req.user);
             try{
-                // Save profile information to the database
-                const puppyProfile = await Dog.create({
-                    ownerId: req.user.id,
-                    name,
-                    age,
-                    location,
-                    introduction,
-                    image:imagePath
-                });
-                console.log('User profile created successfully!');
-                return res.status(200).send({
-                    message: `User profile created successfully!`,
-                    puppyProfile,
-                });
-
+                const dogProfile = await Dog.findOne({
+                    where: {
+                        ownerId: req.user.id
+                    }
+                })
+                if(dogProfile){
+                    if(imagePath){
+                         // Update profile information in the database
+                        const puppyProfile = await Dog.update({
+                            name,
+                            age,
+                            location,
+                            introduction,
+                            image:imagePath
+                        },
+                        {
+                            where: { ownerId: req.user.id },
+                            //show the instances of updated rows
+                            returning: true,
+                        });
+                        console.log('User profile updated successfully!');
+                        return res.status(200).send({
+                            message: `User profile updated successfully!`,
+                            puppyProfile: puppyProfile[1][0],
+                        });
+                    }
+                    else{
+                        // Update profile information in the database without updating image
+                        const puppyProfile = await Dog.update({
+                            name,
+                            age,
+                            location,
+                            introduction,
+                        },
+                        {
+                            where: { ownerId: req.user.id },
+                            //show the instances of updated rows
+                            returning: true,
+                        });
+                        console.log('User profile updated without updating image successfully!');
+                        return res.status(200).send({
+                            message: `User profile updated without updating image successfully!`,
+                            puppyProfile: puppyProfile[1][0],
+                        });
+                    }
+                }
+                else{
+                    // Save profile information to the database
+                    const puppyProfile = await Dog.create({
+                        ownerId: req.user.id,
+                        name,
+                        age,
+                        location,
+                        introduction,
+                        image:imagePath
+                    });
+                    console.log('User profile created successfully!');
+                    return res.status(200).send({
+                        message: `User profile created successfully!`,
+                        puppyProfile,
+                    });
+                }
             }catch(err){
                 console.log('User profile failed to created!');
                 return res.status(500).send({message: `User profile failed! ${err}`});
@@ -244,6 +278,27 @@ module.exports = {
 
     async about(req, res) {
         res.status(200).send({ message: 'Welcome to the about page!' }); 
+    },
+    //API for frontend retrieve data from database
+    async userProfileInformation(req, res) {
+        console.log('Retrieving user profile information...');
+        try{
+            const userProfileInformation = await Dog.findOne({
+                where: {
+                    ownerId: req.user.id
+                }
+            });
+            //add email to userProfileInformation for frontend
+            userProfileInformation.dataValues.email = req.user.email;
+            return res.status(200).send({
+                message: `User profile information retrieved successfully!`,
+                userProfileInformation,
+            });
+        }
+        catch(err){
+            console.log('User profile information failed to retrieve!');
+            return res.status(500).send({message: `User profile information failed! ${err}`});
+        }
     },
     authenticateToken,
 

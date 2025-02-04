@@ -84,11 +84,11 @@ const passwordChangeSuccess = ref(false);
 // });
 
 watch(currentPassword, async (newVal) => {
+    // backend API to compare password
     const encryptedPassword = await AuthenticationService.comparePassword({
         currentEmail: loginUserInformation.loginUserInfo.email,    
         password: newVal
     });
-    console.log(encryptedPassword);
    // user input password correct
     fieldIsDisabled.value = encryptedPassword.status !== 200;
 });

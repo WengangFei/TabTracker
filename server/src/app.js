@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const config = require('./config/config');
 const { sequelize } = require('./models');
+const path = require('path');
 
 
 const app = express();
@@ -16,9 +17,9 @@ app.use(cors());
 require('./routes')(app);
 //connect to database
 require('./db/dbConfig')
-//serve the uploaded images
-app.use('/uploads', express.static('uploads'));
-
+//The express.static middleware serves the uploaded files so that they can be accessed via URLs (e.g., http://localhost:3000/images/myfile.jpg).
+app.use('/src/images', express.static(path.join(__dirname, 'images')));
+console.log(path.join(__dirname, '/uploads'));
 
 //create the data base and start the server
 sequelize.sync().then(

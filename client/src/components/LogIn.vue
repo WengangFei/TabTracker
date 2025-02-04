@@ -36,8 +36,15 @@
                 {{ severSentError }}
             </p>
         </form>
-        <div class="text-center mt-2 text-blue-600 text-xxs font-bold">
+        <div 
+            v-if="!userRegistered.registeredFlag"
+            class="text-center mt-2 text-blue-600 text-xxs font-bold">
             <router-link to="/register">click here go to register page</router-link>
+        </div>
+        <div 
+            v-if="userRegistered.registeredFlag"
+            class="text-center mt-2 text-green-600 text-xxs font-bold">
+            Thanks for the registering, please login now.
         </div>
     </div>
 </template>
@@ -53,7 +60,7 @@ const router = useRouter();
 const emailError = ref(false);
 const passwordError = ref(false);
 const severSentError = ref(null);
-
+const userRegistered = useLoginAuthStore();
 const loginData = reactive({
     email: null,
     password: null,

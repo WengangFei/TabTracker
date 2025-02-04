@@ -1,6 +1,6 @@
 <template>
    <div>
-    <h1 class="title">Please fille out Puppy's Information</h1>
+    <h1 class="title">Please fill out Puppy's Information</h1>
     <v-container class="shadow-md shadow-purple-900 rounded-md m-2 p-1">
         <v-row justify="center">
         <v-col
@@ -14,47 +14,46 @@
                 <v-text-field
                 ref="Name"
                 v-model="submitFormInfo.name"
-                :error-messages="errorMessages"
-                :rules="[() => !!submitFormInfo.name || 'This field is required']"
+                :rules="[
+                (v) => !v || v.length >= 3 ||
+                'Name must be at least 3 characters' 
+                ]"
                 label="Puppy's Name"
-                placeholder="John Doe"
-                required
+                placeholder="Puppy"
                 ></v-text-field>
                 <v-text-field
                     ref="Age"
                     v-model="submitFormInfo.age"
                     :rules="[
-                        () => !!submitFormInfo.age || 'This field is required',
-                        (v) => /^\d+$/.test(v) || 'Please enter a valid number'
+                        (v) => !v || /^\d+$/.test(v) && parseInt(v) > 0 || 'Please enter a valid number greater than 0'
                     ]"
                     label="Age"
                     placeholder="age"
-                    required
                 >
                 </v-text-field>
                 <v-text-field
                     ref="Location"
                     v-model="submitFormInfo.location"
-                    :rules="[() => !!submitFormInfo.location || 'This field is required']"
+                    :rules="[
+                        (v) => !v || v.length >= 3 || 'Location must be at least 3 characters'
+                    ]"
                     label="Location"
                     placeholder="123 Main St, Anytown, USA"
-                    required
                 ></v-text-field>
                 <v-textarea
                     v-model="submitFormInfo.introduction"
                     label="Puppy's Introduction"
                     placeholder="Write something about your puppy"
                     :counter="200"
-                    :rules="[value => value.split(' ').length <= 200 || 'Limit is 200 words']"
-                    required
+                    :rules="[
+                        v => !v || v.split(' ').length <= 200 || 'Limit is 200 words']"
                 ></v-textarea>
                 <!-- Image upload field -->
                 <v-file-input
                     v-model="submitFormInfo.image"
                     label="Upload Puppy's Image"
-                    accept="image/*"
+                    accept="image/* "
                     :error-messages="imageErrorMessages"
-                    required
                 ></v-file-input>
             </v-form>    
             </v-card-text>
@@ -82,9 +81,13 @@
   </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { onBeforeMount, reactive, ref } from 'vue';
 import AuthenticationService from '../services/AuthenticationService';
+import { useLoginAuthStore } from '../stores/loginAuthStore';
 
+
+
+const loginAuthStore = useLoginAuthStore();
 const submitFormInfo = reactive({
     name: '',
     age: '',
@@ -92,17 +95,51 @@ const submitFormInfo = reactive({
     introduction: '',
     image: null
 })
-const errorMessages = ref([]);
+
+console.log('image loaded =>',submitFormInfo.image);
 const imageErrorMessages = ref([]);
 const form = ref(null);
+//Fetching data from DB
+onBeforeMount(
+    async () => {
+        console.log(1)
+        try {
+            const response = await fetch(`http://localhost:${import.meta.env.VITE_SERVER_PORT}/api/profile`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            })    
+            const data = await response.json();
+            console.log('profile page =>',data.userProfileInformation);
+            // Update profile form
+            if(data.userProfileInformation){
+                // Update submitFormInfo with the fetched data
+                submitFormInfo.name = data.userProfileInformation.name;
+                submitFormInfo.age = data.userProfileInformation.age;
+                submitFormInfo.location = data.userProfileInformation.location;
+                submitFormInfo.introduction = data.userProfileInformation.introduction;
+            }
+        } catch (error) {
+            console.log('error from profile page,Can not get user profile information from DB.');
+            console.log(error);
+        }
+    }
+)
+
 
 const submitForm = async () => {
+
     const { valid } = await form.value.validate();
+
     if (valid) {
-        console.log('profile is sent to back =>',submitFormInfo);
+       
         const response = await AuthenticationService.profile(submitFormInfo);
-    
-      
+        console.log('response =>',response);
+        //update the user store profile information
+        loginAuthStore.updateUserProfileInfo(response.data.puppyProfile);
+        
     }else{
         console.log('Form is not valid');
     }

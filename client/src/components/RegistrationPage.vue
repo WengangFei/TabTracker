@@ -59,6 +59,7 @@ import { useRouter } from 'vue-router';
 import AuthenticationService from '../services/AuthenticationService';
 import { useLoginAuthStore } from '../stores/loginAuthStore';
 
+
 //set the initial status 
 const emailError = ref(false);
 const passwordError = ref(false);
@@ -112,8 +113,8 @@ const submitForm = async () => {
 
     }
     else if(serverResponse.status === 200){
-        const loginAuthStore = useLoginAuthStore();
-        loginAuthStore.isAuthenticated = true;
+        //direct to login page to login with new credentials
+        useLoginAuthStore().registeredFlag = true;
         route.push({
             name: 'login',
         });

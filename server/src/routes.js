@@ -1,6 +1,6 @@
 const AuthenticationController = require('./controller/AuthenticationController');
 const JoiPolicies = require('./controlPolicies/JoiPolicies');
-const upload = require('./uploads/multer');
+const upload = require('./multer');
 
 
 
@@ -35,10 +35,17 @@ module.exports = (app) => {
     //profile page
     app.post('/profile', 
         AuthenticationController.authenticateToken,
+        //upload image middleware
         upload.single('image'),
         AuthenticationController.profile
     );
     app.post('/comparePassword', 
         AuthenticationController.comparePassword
     );
+    //Retrieve user profile API
+    app.get('/api/profile', 
+        AuthenticationController.authenticateToken,
+        AuthenticationController.userProfileInformation
+    );
+   
 }
