@@ -95,14 +95,11 @@ const submitFormInfo = reactive({
     introduction: '',
     image: null
 })
-
-console.log('image loaded =>',submitFormInfo.image);
 const imageErrorMessages = ref([]);
 const form = ref(null);
 //Fetching data from DB
 onBeforeMount(
     async () => {
-        console.log(1)
         try {
             const response = await fetch(`http://localhost:${import.meta.env.VITE_SERVER_PORT}/api/profile`, {
                 method: 'GET',
@@ -112,7 +109,6 @@ onBeforeMount(
                 },
             })    
             const data = await response.json();
-            console.log('profile page =>',data.userProfileInformation);
             // Update profile form
             if(data.userProfileInformation){
                 // Update submitFormInfo with the fetched data

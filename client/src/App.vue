@@ -10,16 +10,14 @@ import '@mdi/font/css/materialdesignicons.css';
 
 
 const loginAuthStore = useLoginAuthStore();
-async function homeMessageFromServer() {
-  const result = await AuthenticationService.home();
-  console.log('backend sent =>',result.data.message);
-}
 //profile update flag
 const profileUpdateFlag = ref(false);
 //image domain prefix
 const imageDomainPrefix = import.meta.env.VITE_DOMAIN_URL;
+const universalImage = 'https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg';
 //Retrieve user profile information
 watch(()=>loginAuthStore.isAuthenticated,
+
   async () => {
       try{
         const response = 
@@ -31,13 +29,10 @@ watch(()=>loginAuthStore.isAuthenticated,
           },
         })    
         const data = await response.json();
-        console.log('first show =>',data.userProfileInformation);
         // Update properties of userProfileInfo directly
         loginAuthStore.updateUserProfileInfo(data.userProfileInformation);
         //updating profile image
-        console.log('profile image =>',loginAuthStore.userProfileInfo.image);
         loginAuthStore.userProfileInfo.image = loginAuthStore.userProfileInfo.image;
-  
       }
       catch(error){
         console.log('Can not get user profile information from DB.');
@@ -45,12 +40,23 @@ watch(()=>loginAuthStore.isAuthenticated,
       }
   }
 );
+//format the data to be displayed in profile page
+const formatDate = (isoString) =>{
+    const date = new Date(isoString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month (0-based index)
+    const day = String(date.getDate()).padStart(2, '0'); // Get day
+    const year = date.getFullYear(); // Get year
+
+    return `${month}-${day}-${year}`;
+}
+//online status
+const onlineStatus = loginAuthStore.isAuthenticated ? 'Online' : 'Offline';
+
 //watch database profile change
 watch(() => loginAuthStore.userProfileInfo, () => {
   console.log('user profile info changed =>',loginAuthStore.userProfileInfo);
   profileUpdateFlag.value = profileUpdateFlag.value ? false : true;
 },{ deep: true });// deep watch entire loginAuthStore.userProfileInfo object when profile updated
-
 </script>
 
 <template>
@@ -64,15 +70,27 @@ watch(() => loginAuthStore.userProfileInfo, () => {
       >
         <v-list v-if="loginAuthStore.isAuthenticated">
           <v-list-item>
-            <v-avatar size="45">
-              <img :src=" imageDomainPrefix + loginAuthStore.userProfileInfo.image " alt="Dog" />
+            <v-avatar size="45" class="mb-2">
+              <img :src="loginAuthStore.userProfileInfo.image ?
+                `${imageDomainPrefix}${loginAuthStore.userProfileInfo.image}` :
+                universalImage
+                 " alt="Dog" />
             </v-avatar>
-              <v-list-item-title>{{ 
-                loginAuthStore.userProfileInfo.name || 'Puppy' 
-                }}</v-list-item-title>
-              <v-list-item-subtitle>{{ loginAuthStore.loginUserInfo.email || 'Email' }}</v-list-item-subtitle>
+            <v-list-item-title>
+              {{ loginAuthStore.userProfileInfo.name || 'Puppy' }}
+              <span :class="{ status: onlineStatus === 'Online' }">
+              {{ onlineStatus }}
+              </span>
+              </v-list-item-title>
+            <v-list-item-subtitle class="email">
+              {{ loginAuthStore.loginUserInfo.email || 'Email' }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle class="online">
+              Registered on:{{ formatDate(loginAuthStore.loginUserInfo.createdAt) || 'Registered date' }}
+            </v-list-item-subtitle>
           </v-list-item>
         </v-list>
+
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
@@ -81,7 +99,6 @@ watch(() => loginAuthStore.userProfileInfo, () => {
             title="Home" 
             value="home"
             to="/home"
-            @click="homeMessageFromServer"
           ></v-list-item>
           <v-list-item 
             prepend-icon="mdi-dog" 
@@ -140,7 +157,7 @@ watch(() => loginAuthStore.userProfileInfo, () => {
   .active {
   font-weight: bold;
   color: white;
-  background-color: bLACK;
+  background-color: black;
   height:fit-content;
   border-radius: 5px;
   padding: 1px 2px;
@@ -156,6 +173,23 @@ watch(() => loginAuthStore.userProfileInfo, () => {
   justify-content: center; /* Centers content horizontally */
   align-items: center; /* Centers content vertically */
   min-height: 100vh; /* Ensures the container takes up at least the full viewport height */
+}
+
+.status {
+  color: green;
+  font-size: x-small;
+  font-weight: bold;
+}
+
+.email {
+  font-size: x-small;
+  font-weight: bold;
+  margin-top: 5px;
+}
+.online {
+  font-size: x-small;
+  font-weight: bold;
+  margin-top : 5px;
 }
 </style>
 

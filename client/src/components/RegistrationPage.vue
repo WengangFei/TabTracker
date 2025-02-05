@@ -115,10 +115,11 @@ const submitForm = async () => {
     else if(serverResponse.status === 200){
         //direct to login page to login with new credentials
         useLoginAuthStore().registeredFlag = true;
+        Object.assign(useLoginAuthStore().loginUserInfo,serverResponse.data.registeredInfo);
         route.push({
             name: 'login',
         });
     }
-    console.log('response =>', serverResponse);
+    console.log('create page response =>', serverResponse);
 }
 </script>
