@@ -94,7 +94,7 @@ const submitFormInfo = reactive({
     location: '',
     introduction: '',
     image: null
-})
+});
 const imageErrorMessages = ref([]);
 const form = ref(null);
 //Fetching data from DB
@@ -130,7 +130,7 @@ const submitForm = async () => {
     const { valid } = await form.value.validate();
 
     if (valid) {
-       
+
         const response = await AuthenticationService.profile(submitFormInfo);
         console.log('response =>',response);
         //update the user store profile information

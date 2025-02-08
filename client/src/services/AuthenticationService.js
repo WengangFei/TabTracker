@@ -67,7 +67,15 @@ const AuthenticationService = {
         } catch (error) {
             return error;
         }
-    }
+    },
+    writeLocation: async (credentials) => {
+        try {
+            const response = await api.post("/api/writeLocation", credentials);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
 
 };
 

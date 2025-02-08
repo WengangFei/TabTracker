@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
     confirmPassword: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    actualAddress: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, 
   {

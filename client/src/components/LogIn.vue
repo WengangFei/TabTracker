@@ -1,5 +1,5 @@
 <template>
-    <div class="shadow-md shadow-purple-900 rounded-md p-6 m-2 bg-white">
+    <div class="shadow-md shadow-purple-900 rounded-md p-6 m-2 bg-white center mt-28">
         <form @submit.prevent="loginHandler" class="text-center">
             <!-- <label for="email">Email:</label><br /> -->
             <input 
@@ -35,17 +35,18 @@
             <p v-if="severSentError" class="text-red-500 text-xxs mt-2">
                 {{ severSentError }}
             </p>
+            <div 
+                v-if="!userRegistered.registeredFlag"
+                class="text-center mt-2 text-blue-600 text-xxs font-bold">
+                <router-link to="/register">click here go to register page</router-link>
+            </div>
+            <div 
+                v-if="userRegistered.registeredFlag"
+                class="text-center mt-2 text-green-600 text-xxs font-bold">
+                Thanks for the registering, please login now.
+            </div>
         </form>
-        <div 
-            v-if="!userRegistered.registeredFlag"
-            class="text-center mt-2 text-blue-600 text-xxs font-bold">
-            <router-link to="/register">click here go to register page</router-link>
-        </div>
-        <div 
-            v-if="userRegistered.registeredFlag"
-            class="text-center mt-2 text-green-600 text-xxs font-bold">
-            Thanks for the registering, please login now.
-        </div>
+        
     </div>
 </template>
 

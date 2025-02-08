@@ -63,10 +63,11 @@ module.exports = {
         else{
             try{
                 const registeredUser = await User.create({
-                            email: req.body.email,
-                            password: req.body.password,
-                            confirmPassword: req.body.confirmPassword
-                        });
+                    email: req.body.email,
+                    password: req.body.password,
+                    confirmPassword: req.body.confirmPassword,
+                    actualAddress: req.body.actualAddress
+                });
                 console.log('User register in DB success!');
                 //send response back to front
                 return res.status(200).send({ 
@@ -298,6 +299,31 @@ module.exports = {
         catch(err){
             console.log('User profile information failed to retrieve!');
             return res.status(500).send({message: `User profile information failed! ${err}`});
+        }
+    },
+    //write user location into DB api
+    async writeLocation(req, res) {
+        try{
+            console.log('Write location information =>', req.body);
+            console.log('User id =>', req.user.email);
+            const wroteAddressIntoDB = await User.update({
+                actualAddress: req.body.actualAddress,
+            },
+            {
+                where: { email: req.user.email },
+                //show the instances of updated rows
+                returning: true,
+            });
+            return res.status(200).send({ 
+                message: 'Location updated successfully!',
+                wroteAddressIntoDB : wroteAddressIntoDB[1][0],
+            });
+        }
+        catch(error){
+            console.log('Error updating location:', error);
+            return res.status(500).send({ 
+                message: 'Server error. Can not write location into DB.'
+            });
         }
     },
     authenticateToken,

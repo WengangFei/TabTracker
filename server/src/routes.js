@@ -47,5 +47,9 @@ module.exports = (app) => {
         AuthenticationController.authenticateToken,
         AuthenticationController.userProfileInformation
     );
-   
+    //Write user location into DB
+    app.post('/api/writeLocation', 
+        AuthenticationController.authenticateToken,
+        AuthenticationController.writeLocation
+    );
 }

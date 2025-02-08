@@ -8,7 +8,6 @@ export const useLoginAuthStore = defineStore("loginAuth", () => {
         // email: "",  
         // password: "",
         // token: "",
-        // createdAt: "",
 
     });
     let userProfileInfo = reactive({

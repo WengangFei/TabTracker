@@ -7,8 +7,6 @@ import { useLoginAuthStore } from './stores/loginAuthStore';
 import '@mdi/font/css/materialdesignicons.css';
 
 
-
-
 const loginAuthStore = useLoginAuthStore();
 //profile update flag
 const profileUpdateFlag = ref(false);
@@ -57,6 +55,7 @@ watch(() => loginAuthStore.userProfileInfo, () => {
   console.log('user profile info changed =>',loginAuthStore.userProfileInfo);
   profileUpdateFlag.value = profileUpdateFlag.value ? false : true;
 },{ deep: true });// deep watch entire loginAuthStore.userProfileInfo object when profile updated
+// console.log('login user info =>',loginAuthStore.loginUserInfo);
 </script>
 
 <template>
@@ -131,11 +130,21 @@ watch(() => loginAuthStore.userProfileInfo, () => {
       </v-navigation-drawer>
 
       <v-main 
-        class="router-view-container 
+        class=" min-h-screen 
                 bg-[url(/src/assets/dogPark.png)] 
-                bg-center"
+                bg-center"  
         >
-        <router-view></router-view>
+          <div class="bg-yellow-200 fixed w-full h-20 top-0 py-4 px-6">
+            fixed header
+          </div>
+          <div class="flex space-x-2 mt-20 p-4 justify-center" >
+            <div v-if="loginAuthStore.isAuthenticated" class="bg-red-200 p-4 w-1/8"></div>
+            <div class="bg-green-200 p-4 w-6/8">
+              <router-view></router-view>
+            </div>
+            <div v-if="loginAuthStore.isAuthenticated" class="bg-yellow-200 p-4 w-1/8"></div>
+          </div>
+        
       </v-main>
     </v-layout>
   </v-card>
@@ -166,13 +175,6 @@ watch(() => loginAuthStore.userProfileInfo, () => {
 
 .nav-drawer {
   min-width: 80px !important;
-}
-
-.router-view-container {
-  display: flex;
-  justify-content: center; /* Centers content horizontally */
-  align-items: center; /* Centers content vertically */
-  min-height: 100vh; /* Ensures the container takes up at least the full viewport height */
 }
 
 .status {
