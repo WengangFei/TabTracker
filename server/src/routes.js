@@ -52,4 +52,9 @@ module.exports = (app) => {
         AuthenticationController.authenticateToken,
         AuthenticationController.writeLocation
     );
+    //get nearby users
+    app.post('/api/getNearbyUsers', 
+        AuthenticationController.authenticateToken,
+        AuthenticationController.getNearbyUsers
+    );
 }

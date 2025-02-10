@@ -8,6 +8,8 @@ module.exports = {
             email: Joi.string().email().required(),
             password: Joi.string().min(6).required(),
             confirmPassword: Joi.string().min(6).required(),
+            lat: Joi.number().optional(),
+            lng: Joi.number().optional(),
             actualAddress: Joi.string().allow(''),
         });
         const { error } = schema.validate(req.body);

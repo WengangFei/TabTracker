@@ -3,6 +3,7 @@ const dogModel = require('../models/dogs');
 const { sequelize, Sequelize } = require('../db/dbConfig');
 const User = userModel(sequelize, Sequelize.DataTypes);
 const Dog = dogModel(sequelize, Sequelize.DataTypes);
+const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 //JWT middleware
 const jwt = require('jsonwebtoken');
@@ -66,6 +67,8 @@ module.exports = {
                     email: req.body.email,
                     password: req.body.password,
                     confirmPassword: req.body.confirmPassword,
+                    lat: req.body.lat,
+                    lng: req.body.lng,
                     actualAddress: req.body.actualAddress
                 });
                 console.log('User register in DB success!');
@@ -173,7 +176,7 @@ module.exports = {
         try{
             const { name, age, location, introduction } = req.body;
             const imagePath = req.file ? req.file.path : undefined;  
-            console.log('Profile information =>', req.user);
+            // console.log('create profile information =>', req.user);
             try{
                 const dogProfile = await Dog.findOne({
                     where: {
@@ -221,7 +224,7 @@ module.exports = {
                         });
                     }
                 }
-                else{
+                else{console.log('User profile send info! =>', req.body);
                     // Save profile information to the database
                     const puppyProfile = await Dog.create({
                         ownerId: req.user.id,
@@ -238,7 +241,7 @@ module.exports = {
                     });
                 }
             }catch(err){
-                console.log('User profile failed to created!');
+                console.log('User profile failed to created!', err.message);
                 return res.status(500).send({message: `User profile failed! ${err}`});
             }
     
@@ -308,6 +311,8 @@ module.exports = {
             console.log('User id =>', req.user.email);
             const wroteAddressIntoDB = await User.update({
                 actualAddress: req.body.actualAddress,
+                lat: req.body.lat,
+                lng: req.body.lng,
             },
             {
                 where: { email: req.user.email },
@@ -326,6 +331,42 @@ module.exports = {
             });
         }
     },
+    async getNearbyUsers(req, res) {
+        try{
+            const { maxLat,minLat,maxLng,minLng } = req.body;
+            const nearbyUsers = await User.findAll({
+                where: {
+                    lat:{
+                        [Op.between]:[minLat,maxLat],
+                    },
+                    lng:{
+                        [Op.between]:[minLng,maxLng],   
+                    }
+                },
+            });
+            console.log('nearby users =>',nearbyUsers.length);
+            if(nearbyUsers.length !== 0){
+                const filteredNearbyUsers = nearbyUsers.filter(user => user.email !== req.user.email).map(user => user.get().id);
+                console.log('filteredNearbyUsers =>',filteredNearbyUsers);
+                return res.status(200).send({
+                    message: 'Nearby users retrieved successfully!',
+                    nearbyUsers: filteredNearbyUsers,
+                })
+            }else{
+                console.log('Does not have nearby users in DB!');
+            }
+            return res.status(200).send({
+                message: 'Nearby users retrieved successfully!',
+                nearbyUsers,
+            });
+        }catch{
+            console.log('Can not get lat and lng from frontend to retrieve nearby users in DB!');
+            return res.status(500).send({message: `get nearby users failed!`});
+        }
+        
+    },
+
+
     authenticateToken,
 
 }

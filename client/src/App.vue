@@ -139,7 +139,7 @@ watch(() => loginAuthStore.userProfileInfo, () => {
           </div>
           <div class="flex space-x-2 mt-20 p-4 justify-center" >
             <div v-if="loginAuthStore.isAuthenticated" class="bg-red-200 p-4 w-1/8"></div>
-            <div class="bg-green-200 p-4 w-6/8">
+            <div class="bg-green-200 p-4 w-full">
               <router-view></router-view>
             </div>
             <div v-if="loginAuthStore.isAuthenticated" class="bg-yellow-200 p-4 w-1/8"></div>

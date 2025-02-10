@@ -6,8 +6,11 @@
     .btn {
         @apply bg-red-500 text-white px-2 py-1 rounded-md text-sm
     }
-}
 
+    .homepage-spinner {
+        @apply w-2/5 min-h-20 shadow-md shadow-purple-900 rounded-md
+    }
+}
 @layer base {
     h1 {
         @apply text-2xl font-bold

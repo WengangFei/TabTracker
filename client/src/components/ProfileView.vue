@@ -1,5 +1,5 @@
 <template>
-   <div>
+   <div class="w-fit m-auto">
     <h1 class="title">Please fill out Puppy's Information</h1>
     <v-container class="shadow-md shadow-purple-900 rounded-md m-2 p-1">
         <v-row justify="center">

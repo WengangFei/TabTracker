@@ -1,5 +1,5 @@
 <template>
-    <div class="shadow-md shadow-purple-900 rounded-md p-6 m-2 bg-white center mt-28">
+    <div class="shadow-md shadow-purple-900 rounded-md p-6 m-2 bg-white mt-28 w-fit m-auto">
         <form @submit.prevent="loginHandler" class="text-center">
             <!-- <label for="email">Email:</label><br /> -->
             <input 

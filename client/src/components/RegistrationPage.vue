@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-md m-2 p-6 shadow-md shadow-yellow-400 bg-white mt-28">
+    <div class="rounded-md m-2 m-auto w-fit p-6 shadow-md text-center shadow-yellow-400 bg-white mt-28">
         <h1 class="text-center mb-6">Register An Account</h1>
         <form @submit.prevent="submitForm">
             <label for="email">Email:</label><br />
@@ -64,9 +64,9 @@ import { useLoginAuthStore } from '../stores/loginAuthStore';
 const emailError = ref(false);
 const passwordError = ref(false);
 const confirmPasswordError = ref(false);
-const noBlankSubmit = ref(true);
 const emailExistError = ref(false);
 const severSentError = ref(null);
+
 
 const route = useRouter();
 
@@ -87,6 +87,8 @@ const submitData = reactive({
     email: '',
     password: '',
     confirmPassword: '',
+    lat: 0,
+    lng: 0,
     actualAddress:'',
 })
 

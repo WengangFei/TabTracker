@@ -76,6 +76,14 @@ const AuthenticationService = {
             return error;
         }
     },
+    getNearbyUsers: async (credentials) => {
+        try {
+            const response = await api.post("/api/getNearbyUsers", credentials);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
 
 };
 
