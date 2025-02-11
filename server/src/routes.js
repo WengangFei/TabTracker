@@ -57,4 +57,9 @@ module.exports = (app) => {
         AuthenticationController.authenticateToken,
         AuthenticationController.getNearbyUsers
     );
+    //collect nearby users profile
+    app.post('/api/collectNearbyUsersProfile', 
+        AuthenticationController.authenticateToken,
+        AuthenticationController.collectNearbyUsersProfile
+    );
 }

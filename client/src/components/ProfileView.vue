@@ -101,7 +101,7 @@ const form = ref(null);
 onBeforeMount(
     async () => {
         try {
-            const response = await fetch(`http://localhost:${import.meta.env.VITE_SERVER_PORT}/api/profile`, {
+            const response = await fetch(`${import.meta.env.VITE_DOMAIN_URL}${import.meta.env.VITE_SERVER_PORT}/api/profile`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +130,6 @@ const submitForm = async () => {
     const { valid } = await form.value.validate();
 
     if (valid) {
-
         const response = await AuthenticationService.profile(submitFormInfo);
         console.log('response =>',response);
         //update the user store profile information

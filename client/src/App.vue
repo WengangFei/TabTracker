@@ -11,7 +11,7 @@ const loginAuthStore = useLoginAuthStore();
 //profile update flag
 const profileUpdateFlag = ref(false);
 //image domain prefix
-const imageDomainPrefix = import.meta.env.VITE_DOMAIN_URL;
+const imageDomainPrefix = import.meta.env.VITE_DOMAIN_PATH;
 const universalImage = 'https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg';
 //Retrieve user profile information
 watch(()=>loginAuthStore.isAuthenticated,
@@ -19,7 +19,7 @@ watch(()=>loginAuthStore.isAuthenticated,
   async () => {
       try{
         const response = 
-        await fetch(`http://localhost:${import.meta.env.VITE_SERVER_PORT}/api/profile`, {
+        await fetch(`${import.meta.env.VITE_DOMAIN_URL}${import.meta.env.VITE_SERVER_PORT}/api/profile`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -140,7 +140,10 @@ watch(() => loginAuthStore.userProfileInfo, () => {
           <div class="flex space-x-2 mt-20 p-4 justify-center" >
             <div v-if="loginAuthStore.isAuthenticated" class="bg-red-200 p-4 w-1/8"></div>
             <div class="bg-green-200 p-4 w-full">
-              <router-view></router-view>
+              <router-view v-slot="{ Component }">
+                <keep-alive>
+                  <component :is="Component" /></keep-alive>
+              </router-view>
             </div>
             <div v-if="loginAuthStore.isAuthenticated" class="bg-yellow-200 p-4 w-1/8"></div>
           </div>

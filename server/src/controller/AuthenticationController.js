@@ -24,14 +24,14 @@ const authenticateToken = async (req, res, next) => {
 
         // Verify the token
         jwt.verify(token, JWT_SECRET, (err, user) => {
+            // console.log('jwt user decoded ==>:', user);
             if (err) {
                 // Token is invalid
                 return res.status(403).json({ message: 'Forbidden', error: err.message });
             }
-
             // Successful token verification
             req.user = user;  // Attach user information to the request object
-            console.log('jwt decoded:', req.user);
+            // console.log('jwt decoded:', req.user);
             console.log('User authenticated successfully.');
 
             // Proceed to the next middleware/route handler
@@ -105,7 +105,7 @@ module.exports = {
                 console.log('User password is incorrect!');
                 return res.status(404).send({message: `User password is incorrect!`});
             }
-            console.log('User login info =>',userName.toJSON());
+            // console.log('User login info =>',userName.toJSON());
             //create JWT token when user login
             const token = jwt.sign(
                 { id: userName.id, email: userName.email },
@@ -173,10 +173,11 @@ module.exports = {
     },
 
     async profile(req, res) {
+        console.log('User visited profile page!');
         try{
             const { name, age, location, introduction } = req.body;
             const imagePath = req.file ? req.file.path : undefined;  
-            // console.log('create profile information =>', req.user);
+            console.log('create profile information =>', req.user);
             try{
                 const dogProfile = await Dog.findOne({
                     where: {
@@ -307,15 +308,15 @@ module.exports = {
     //write user location into DB api
     async writeLocation(req, res) {
         try{
-            console.log('Write location information =>', req.body);
-            console.log('User id =>', req.user.email);
+            // console.log('Write location information =>', req.body);
+            // console.log('User id =>', req.user);
             const wroteAddressIntoDB = await User.update({
                 actualAddress: req.body.actualAddress,
                 lat: req.body.lat,
                 lng: req.body.lng,
             },
             {
-                where: { email: req.user.email },
+                where: { email: req.body.loginUserEmail },
                 //show the instances of updated rows
                 returning: true,
             });
@@ -344,10 +345,10 @@ module.exports = {
                     }
                 },
             });
-            console.log('nearby users =>',nearbyUsers.length);
+            // console.log('nearby users =>',nearbyUsers.length);
             if(nearbyUsers.length !== 0){
                 const filteredNearbyUsers = nearbyUsers.filter(user => user.email !== req.user.email).map(user => user.get().id);
-                console.log('filteredNearbyUsers =>',filteredNearbyUsers);
+                // console.log('filteredNearbyUsers =>',filteredNearbyUsers);
                 return res.status(200).send({
                     message: 'Nearby users retrieved successfully!',
                     nearbyUsers: filteredNearbyUsers,
@@ -364,6 +365,30 @@ module.exports = {
             return res.status(500).send({message: `get nearby users failed!`});
         }
         
+    },
+    //collect nearby users profile
+    async collectNearbyUsersProfile(req, res) {
+        try{
+            const { nearbyUsersArray } = req.body;
+            const collectNearbyUsersProfile = await Dog.findAll({
+                where: {
+                    ownerId: {
+                        [Op.in]: nearbyUsersArray
+                    }
+                }
+            });
+            // collectNearbyUsersProfile.forEach(user => {
+            //     console.log(user.get());
+            // })
+            return res.status(200).send({
+                message: 'Nearby users profile retrieved successfully!',
+                collectNearbyUsersProfile,
+            });
+            
+        }catch(error){ 
+            console.log('Can not collect nearby users profile!' + error.message);
+            return res.status(500).send({message: `collect nearby users profile failed!`});
+        }
     },
 
 

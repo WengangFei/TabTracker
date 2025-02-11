@@ -50,9 +50,10 @@ const AuthenticationService = {
     profile: async (credentials ) => {
         try {
             return await api.post("/profile", credentials,{
-                //save image file
+                //overwrite the preset header for save image file into DB
                 headers:{
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }
             });
            
@@ -79,6 +80,14 @@ const AuthenticationService = {
     getNearbyUsers: async (credentials) => {
         try {
             const response = await api.post("/api/getNearbyUsers", credentials);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
+    collectNearbyUsersProfile: async (credentials) => {
+        try {
+            const response = await api.post("/api/collectNearbyUsersProfile", credentials);
             return response;
         } catch (error) {
             return error;

@@ -84,13 +84,14 @@ const loginHandler = async () => {
         loginAuthStore.loginUserInfo.email = responseMessage.data.loginInfo.email;
         loginAuthStore.loginUserInfo.password = responseMessage.data.loginInfo.password;
         loginAuthStore.loginUserInfo.token = responseMessage.data.token;
+        loginAuthStore.loginUserInfo.createdAt = responseMessage.data.loginInfo.createdAt;
         //save token to local storage
         localStorage.setItem('token', responseMessage.data.token);
         router.push({
             name: 'home',
         });
     }
-    console.log('Login user info =>',responseMessage);
+    // console.log('Login user info =>',responseMessage);
 }
 
 watch(()=> loginData.password, (newVal) => {
