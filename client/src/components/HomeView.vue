@@ -1,15 +1,21 @@
 <template>
-    <div>
+    <div class="flex">
         <div class="homepage-location-window">
-            <HomeLocationwindow/>
+            <HomeLocationWindow/>
         </div>
-        
+        <div>
+            
+        </div>
     </div>
+
+
+
 </template>
 
 <script setup>
 
-import HomeLocationwindow from './HomeLocationwindow.vue';
+import HomeLocationWindow from './HomeLocationWindow.vue';
+
 
 </script>
 

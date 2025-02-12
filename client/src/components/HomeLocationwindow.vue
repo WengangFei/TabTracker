@@ -28,6 +28,7 @@
                         {{ option.label }}
                     </option>
                 </select>
+                <span></span>
                 <!-- <p>
                 <span class="text-red-600 text-md font-bold px-2">
                     {{ nearbyUsers.length }}
@@ -51,6 +52,8 @@ import axios from "axios";
 import AuthenticationService from '../services/AuthenticationService';
 import NearbyUsers from './NearbyUsers.vue';
 import { useLoginAuthStore } from '../stores/loginAuthStore';
+
+
 
 const nearbyUsers = ref([]);
 const loading = ref(true);

@@ -29,7 +29,9 @@ const imagePath = import.meta.env.VITE_DOMAIN_PATH + prop.user.image;
     margin: 1px 3px;
     cursor:pointer;
     &:hover{
-        transform: scale(1.2);
+        transform: scale(1.5);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        transform-origin: center;
     }
 }
 

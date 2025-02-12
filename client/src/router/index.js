@@ -53,10 +53,15 @@ const router = createRouter({
             meta: { requiresAuth: true },
         },
         {
-            path: '/profile/',
+            path: '/profile',
             name: 'profile',
             component: () => import('../components/ProfileView.vue'),
             meta: { requiresAuth: true },
+        },
+        {
+            path: '/search',
+            name: 'search',
+            component: () => import('../components/HomeSearchWindow.vue'),
         }
     ]
 });

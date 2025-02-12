@@ -48,6 +48,7 @@ const authenticateToken = async (req, res, next) => {
 
 
 module.exports = {
+    authenticateToken,
     async register (req, res){
         //receive post request data from front
         console.log('register data =>', req.body);
@@ -377,9 +378,7 @@ module.exports = {
                     }
                 }
             });
-            // collectNearbyUsersProfile.forEach(user => {
-            //     console.log(user.get());
-            // })
+            console.log('Nearby users =>',collectNearbyUsersProfile.length);
             return res.status(200).send({
                 message: 'Nearby users profile retrieved successfully!',
                 collectNearbyUsersProfile,
@@ -390,8 +389,41 @@ module.exports = {
             return res.status(500).send({message: `collect nearby users profile failed!`});
         }
     },
+    //collect search users profile
+    async collectSearchUsers(req, res) {
+        try {
+            console.log('serach user =>',req.query);
+            console.log('use=>',req.user);
+            const { name } = req.query;
+            const users = await Dog.findAll({
+              where: {
+                name: {
+                    // Case-insensitive search for name containing 'john'
+                    [Op.iLike]: `%${name}%` 
+                },
+                //Exclude current user
+                ownerId: {
+                    [Op.ne]: req.user.id
+                }
+              }
+            });
+            console.log('users =>',users.length);
+            // Log the results (you can return or process the data further)
+            console.log(users.map(user => user.name));
+            if(users){
+                return res.status(200).send({
+                    message: 'Search users profile retrieved successfully!',
+                    users,
+                })
+            }else{
+                console.log('Does not have search users in DB!');
+            }
+            
+        } catch (error) {
+        console.error('Error retrieving users:', error);
+        }
+    }, 
 
-
-    authenticateToken,
+    
 
 }

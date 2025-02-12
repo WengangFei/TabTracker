@@ -93,6 +93,14 @@ const AuthenticationService = {
             return error;
         }
     },
+    searchUsers: async (credentials) => {
+        try {
+            const response = await api.get("/api/searchUsers", credentials);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
 
 };
 

@@ -4,7 +4,9 @@ import LogoutPage from './components/LogoutPage.vue';
 import router from './router';
 import AuthenticationService from './services/AuthenticationService';
 import { useLoginAuthStore } from './stores/loginAuthStore';
-import '@mdi/font/css/materialdesignicons.css';
+
+
+
 
 
 const loginAuthStore = useLoginAuthStore();
@@ -112,6 +114,12 @@ watch(() => loginAuthStore.userProfileInfo, () => {
             value="settings"
             to="/setting"
             v-if="loginAuthStore.isAuthenticated"></v-list-item>
+            <v-list-item 
+            prepend-icon="mdi-magnify-scan" 
+            title="Search" 
+            value="search"
+            to="/search"
+            v-if="loginAuthStore.isAuthenticated"></v-list-item>
           <v-list-item 
             prepend-icon="mdi-information" 
             title="About" 
@@ -134,8 +142,8 @@ watch(() => loginAuthStore.userProfileInfo, () => {
                 bg-[url(/src/assets/dogPark.png)] 
                 bg-center"  
         >
-          <div class="bg-yellow-200 fixed w-full h-20 top-0 py-4 px-6">
-            fixed header
+          <div class="bg-yellow-200 fixed w-full h-20 top-0 py-4 px-12">
+            Header
           </div>
           <div class="flex space-x-2 mt-20 p-4 justify-center" >
             <div v-if="loginAuthStore.isAuthenticated" class="bg-red-200 p-4 w-1/8"></div>
