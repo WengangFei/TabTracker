@@ -101,6 +101,14 @@ const AuthenticationService = {
             return error;
         }
     },
+    searchSingleUser: async (credentials) => {
+        try {
+            const response = await api.post("/api/searchSingleUser", credentials);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
 
 };
 

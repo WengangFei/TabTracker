@@ -333,6 +333,7 @@ module.exports = {
             });
         }
     },
+    //get nearby users return as an array for collectNearbyUsersProfile api
     async getNearbyUsers(req, res) {
         try{
             const { maxLat,minLat,maxLng,minLng } = req.body;
@@ -367,7 +368,7 @@ module.exports = {
         }
         
     },
-    //collect nearby users profile
+    //home location window auto collect nearby users profile return as an array
     async collectNearbyUsersProfile(req, res) {
         try{
             const { nearbyUsersArray } = req.body;
@@ -389,7 +390,7 @@ module.exports = {
             return res.status(500).send({message: `collect nearby users profile failed!`});
         }
     },
-    //collect search users profile
+    //collect searched users return as an array
     async collectSearchUsers(req, res) {
         try {
             console.log('serach user =>',req.query);
@@ -423,7 +424,25 @@ module.exports = {
         console.error('Error retrieving users:', error);
         }
     }, 
-
+    //search single user
+    async searchSingleUser(req, res) {  
+        try{console.log('search single user information =>', req.body);
+            const { id } = req.body;
+            const singleUser = await User.findOne({
+                where: {
+                    id: id
+                }
+            });
+            console.log('Single user =>',singleUser.get());
+            return res.status(200).send({
+                message: 'Single user profile retrieved successfully!',
+                singleUser,
+            }); 
+        }catch(error){
+            console.log('Can not search single user!' + error.message);
+            return res.status(500).send({message: `search single user failed!`});
+        }
+    }
     
 
 }

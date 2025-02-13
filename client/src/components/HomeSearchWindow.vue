@@ -32,15 +32,26 @@
             </v-progress-circular>
         </div>
         <div class="search-container" >
-            <p v-if="searchedUsers.length === 0" class="text-red-500">
-                No users found!
+            <div class="text-md font-bold text-center">
+                Displaying Searched Puppies
+            </div>
+            <p 
+                v-if="searchedUsers.length === 0" 
+                class="text-red-500 font-bold"
+                >
+                No puppies found!
             </p>
-            <NearbyUsers 
-                if="searchedUsers.length > 0" 
-                v-for="user in searchedUsers" 
-                :key="user.id" 
-                :user="user" 
-            />
+            <div class="flex flex-wrap">
+                <NearbyUsers 
+                    v-if="searchedUsers.length > 0" 
+                    v-for="user in searchedUsers" 
+                    :key="user.id" 
+                    :user="user" 
+                    click="singleUserSearch"
+                    @sendOrdinates="sendOrdinatesFromChild"
+                />
+            </div>
+            
       </div>
     </div>
     </v-card>
@@ -58,21 +69,45 @@ import NearbyUsers from './NearbyUsers.vue';
 const searchQuery = ref('');
 const loading = ref(true);
 const searchedUsers = ref([]);
+const lat = ref(null);
+const lng = ref(null);
 // Map reference
 const mapContainer = ref(null);
+//map instance
+let mapInstance = null;
 // OpenCage API key
 const apiKey = import.meta.env.VITE_OPEN_CAGE_API_KEY;
+//getting Ordinates via child component emit function
+const sendOrdinatesFromChild = (ordinates) => {
+    lat.value = ordinates.lat;
+    lng.value = ordinates.lng;
+};
+//reloading clicked user location
+watch([lat, lng], () => {
+    // console.log('watch...','lat=>',lat.value,'lng=>',lng.value);
+    initMap(lat.value, lng.value);
+});
 // Function to initialize the map
 const initMap = (lat, lng) => {
     if (mapContainer.value) {
-        const map = L.map(mapContainer.value).setView([lat, lng], 15);
+        // Create the map if it doesn't exist
+        if(!mapInstance){
+            mapInstance = L.map(mapContainer.value).setView([lat, lng], 15);
+        }
         // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
         loading.value = false;
         // Mark the current location
-        L.marker([lat, lng]).addTo(map)
-        .bindPopup('You are here!')
-        .openPopup();
+        if(!mapInstance){
+            L.marker([lat, lng]).addTo(mapInstance)
+            .bindPopup('You are here!')
+            .openPopup();
+        }else{
+            L.marker([lat, lng]).addTo(mapInstance)
+            .bindPopup('Searched user are here!')
+            .openPopup();
+        }
+        
     } else {
         console.error("Map container not found.");
     }
@@ -85,7 +120,7 @@ const getLocation = () => {
         (position) => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-
+            console.log('current user location =>',lat,'-',lng);
             // Call OpenCage API to reverse geocode (correct usage)
             OpenCage.geocode({ q: `${lat},${lng}`, key: apiKey }).
             then((response) => {
@@ -124,13 +159,13 @@ onMounted(() => {
 });
 //search users
 const searchUser = async () => {
-    console.log('search user =>',searchQuery.value);
+    // console.log('search user =>',searchQuery.value);
     const users = await AuthenticationService.searchUsers({
         params: {
             name: searchQuery.value,
         }
     });
-    console.log('return users =>',users);
+    // console.log('return users =>',users);
     if(users.status === 200){
         searchedUsers.value = users.data.users;
         console.log('searched users =>',searchedUsers.value);

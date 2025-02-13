@@ -62,8 +62,15 @@ module.exports = (app) => {
         AuthenticationController.authenticateToken,
         AuthenticationController.collectNearbyUsersProfile
     );
+    //manually search users
     app.get('/api/searchUsers', 
         AuthenticationController.authenticateToken,
         AuthenticationController.collectSearchUsers
     );
+    //search single user
+    app.post('/api/searchSingleUser', 
+        AuthenticationController.authenticateToken,
+        AuthenticationController.searchSingleUser
+    );
+    
 }
