@@ -3,8 +3,8 @@
         <div class="homepage-location-window">
             <HomeLocationWindow/>
         </div>
-        <div>
-            
+        <div class="homepage-events-window">
+            <HomeEventsWindow/>
         </div>
     </div>
 
@@ -14,6 +14,7 @@
 
 <script setup>
 
+import HomeEventsWindow from './HomeEventsWindow.vue';
 import HomeLocationWindow from './HomeLocationWindow.vue';
 
 

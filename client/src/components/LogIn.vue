@@ -32,7 +32,7 @@
                     }"
                 >login
             </button>
-            <p v-if="severSentError" class="text-red-500 text-xxs mt-2">
+            <p v-if="severSentError && !userRegistered.registeredFlag" class="text-red-500 text-xxs mt-2">
                 {{ severSentError }}
             </p>
             <div 

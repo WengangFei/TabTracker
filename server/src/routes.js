@@ -33,19 +33,27 @@ module.exports = (app) => {
         AuthenticationController.about
     );
     //profile page
-    app.post('/profile', 
+    app.post('/puppies', 
         AuthenticationController.authenticateToken,
         //upload image middleware
         upload.single('image'),
-        AuthenticationController.profile
+        AuthenticationController.puppies
     );
     app.post('/comparePassword', 
         AuthenticationController.comparePassword
     );
+    //write user profile
+    app.post('/api/write_user_profile', 
+        AuthenticationController.authenticateToken, 
+        JoiPolicies.writeUserProfile,
+        //upload image middleware
+        upload.single('image'),
+        AuthenticationController.writeUserProfile,
+    );
     //Retrieve user profile API
-    app.get('/api/profile', 
+    app.get('/api/retrieve_user_profile', 
         AuthenticationController.authenticateToken,
-        AuthenticationController.userProfileInformation
+        AuthenticationController.retrieveUserProfileInformation
     );
     //Write user location into DB
     app.post('/api/writeLocation', 
@@ -72,5 +80,10 @@ module.exports = (app) => {
         AuthenticationController.authenticateToken,
         AuthenticationController.searchSingleUser
     );
-    
+    //create event
+    app.post('/api/createEvent', 
+        AuthenticationController.authenticateToken,
+        JoiPolicies.createEvent,
+        AuthenticationController.createEvent
+    );
 }

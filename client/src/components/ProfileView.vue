@@ -78,7 +78,7 @@
   </v-container>
    </div>
     
-  </template>
+</template>
 
 <script setup>
 import { onBeforeMount, reactive, ref } from 'vue';

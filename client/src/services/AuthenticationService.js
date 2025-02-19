@@ -47,9 +47,35 @@ const AuthenticationService = {
             return error;
         }
     },
-    profile: async (credentials ) => {
+    //retrieve user profile
+    retrieveUserProfileInformation: async () => {
         try {
-            return await api.post("/profile", credentials,{
+            const response = await api.get("/api/retrieve_user_profile");
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
+    //register user profile
+    writeUserProfile: async (credentials) => {
+        try {
+                const response = await api.post("/api/write_user_profile", credentials,
+                {
+                //overwrite the preset header for save image file into DB
+                headers:{
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                }
+            }
+        );
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
+    puppies: async (credentials ) => {
+        try {
+            return await api.post("/puppies", credentials,{
                 //overwrite the preset header for save image file into DB
                 headers:{
                     'Content-Type': 'multipart/form-data',
@@ -104,6 +130,15 @@ const AuthenticationService = {
     searchSingleUser: async (credentials) => {
         try {
             const response = await api.post("/api/searchSingleUser", credentials);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
+    //send events to server
+    createEvent: async (credentials) => {
+        try {
+            const response = await api.post("/api/createEvent", credentials);
             return response;
         } catch (error) {
             return error;

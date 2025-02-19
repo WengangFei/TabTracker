@@ -1,26 +1,54 @@
 <template>
-  <div class="
-      border 
-      border-gray-400 
-      rounded-md 
-      m-1 
-      text-center
-      hover:scale-125
-      transition-transform
-      duration-300
-      w-1/4
-      cursor-pointer"
-      @click="searchLocation(user.ownerId)"
-      >
-    <v-avatar size="20" class="card">
-      <v-img
+       
+
+  <v-hover #default="{ isHovering, props }">
+    <div class="
+          border 
+          border-gray-400 
+          rounded-md 
+          m-1 
+          hover:scale-75
+          transition-transform
+          duration-300
+          text-center
+          w-14
+          cursor-pointer"
+          v-bind="props"
+          @click="searchLocation(user.ownerId)"
+    >
+
+      <v-avatar size="20" class="card">
+        <v-img
         alt="Puppy"
         :src="imagePath"
-      ></v-img>
-    </v-avatar>
-    <p class="text-xxs font-bold p-1">{{ user.name }}</p>
-  </div>
+      
+        ></v-img>
+      </v-avatar>
+      <p class="text-xxs font-bold p-1">{{ user.name }}</p>
+ 
+      <v-card
+        width="350"
+        v-if="isHovering"
+      >
+        <v-img
+          height="80px"
+          :src="imagePath"
+        ></v-img>
+        <v-card-title>
+          Name: {{ user.name }}
+        </v-card-title>
 
+        <v-card-subtitle>
+          Age: {{ user.age }}
+        </v-card-subtitle>
+        <v-divider></v-divider>
+        <v-card-text>
+          Description:{{ user.introduction }}
+        </v-card-text>
+      </v-card>
+     
+    </div>
+  </v-hover>
 </template>
 
 <script setup>
@@ -57,18 +85,31 @@ const searchLocation = async (id) => {
 
 <style lang="scss" scoped>
 .card{
-    transition: transform 0.3s ease-in-out;
+    // transition: transform 0.3s ease-in-out;
     background-color: none;
     border-radius: 40%;
     margin: 1px 3px;
     cursor:pointer;
     
 }
-.name:hover{
-        transform: scale(1.5);
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        transform-origin: center;
-    }
+// .name:hover{
+//         transform: scale(1.5);
+//         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+//         transform-origin: center;
+//     }
 
+.v-card {
+    position: absolute;
+    transform: translate(0%, 0%);
+    z-index: 5;
+    top: -100%;
+    left: -100%;
+    overflow:visible;
 
+}
+
+.v-card-title {
+    font-size: 12px;
+    font-weight: bold;
+}
 </style>

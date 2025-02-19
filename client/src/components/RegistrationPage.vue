@@ -87,9 +87,6 @@ const submitData = reactive({
     email: '',
     password: '',
     confirmPassword: '',
-    lat: 0,
-    lng: 0,
-    actualAddress:'',
 })
 
 //validate the user's input data

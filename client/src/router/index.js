@@ -23,9 +23,9 @@ const router = createRouter({
             meta: { requiresAuth: true },
         },
         {
-            path: '/profile',
-            name: 'profile',
-            component: () => import('../components/ProfileView.vue'),
+            path: '/user_profile',
+            name: 'user_profile',
+            component: () => import('../components/UserProfile.vue'),
             meta: { requiresAuth: true },
         },
         {
@@ -53,15 +53,20 @@ const router = createRouter({
             meta: { requiresAuth: true },
         },
         {
-            path: '/profile',
-            name: 'profile',
-            component: () => import('../components/ProfileView.vue'),
+            path: '/puppies',
+            name: 'puppies',
+            component: () => import('../components/PuppiesView.vue'),
             meta: { requiresAuth: true },
         },
         {
             path: '/search',
             name: 'search',
             component: () => import('../components/HomeSearchWindow.vue'),
+        },
+        {
+            path: '/create_events',
+            name: 'create_events',
+            component: () => import('../components/CreateEvents.vue'),
         }
     ]
 });

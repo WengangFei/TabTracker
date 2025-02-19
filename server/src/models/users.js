@@ -20,17 +20,42 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    age:{
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    contact:{
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    location: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    introduction: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+
     lat:{
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     },
     lng:{
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     },
     actualAddress: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     }
   }, 
   {

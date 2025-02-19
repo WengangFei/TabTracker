@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 //create the uploads folder if it doesn't exist
-const uploadsDir = 'src/images/';
+const uploadsDir = 'src/images/user';
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }

@@ -1,8 +1,10 @@
 const userModel = require('../models/users');
 const dogModel = require('../models/dogs');
+const eventModel = require('../models/events');
 const { sequelize, Sequelize } = require('../db/dbConfig');
 const User = userModel(sequelize, Sequelize.DataTypes);
 const Dog = dogModel(sequelize, Sequelize.DataTypes);
+const Event = eventModel(sequelize, Sequelize.DataTypes);
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 //JWT middleware
@@ -68,9 +70,6 @@ module.exports = {
                     email: req.body.email,
                     password: req.body.password,
                     confirmPassword: req.body.confirmPassword,
-                    lat: req.body.lat,
-                    lng: req.body.lng,
-                    actualAddress: req.body.actualAddress
                 });
                 console.log('User register in DB success!');
                 //send response back to front
@@ -97,7 +96,7 @@ module.exports = {
         
             if(!userName){
                 console.log('User not found!');
-                return res.status(404).send({message: `User ${req.body.email} not found!`});
+                return res.status(404).send({message: `Email ${req.body.email} not exist. Please register an Account!`});
             }
             //check if password is match the password in DB
             const usePassword = await bcrypt.compare(req.body.password, userName.password);
@@ -120,8 +119,8 @@ module.exports = {
             });
         }
         catch(err){
-            console.log('User login failed!');
-            return res.status(500).send({message: `User login failed! ${err}`});
+            console.log('User login failed!'+ err);
+            return res.status(500).send({message: "Email not exist, please register an account!"});
         }
     },
 
@@ -172,8 +171,56 @@ module.exports = {
             return res.status(500).send({ message: 'Server error. Please try again later.' });
         }
     },
+    //write user profile
+    async writeUserProfile(req, res) {
+        try{
+            const updateData = {};
+            // Check each field in req.body and only add non-null and non-empty string values
+            if (req.body.name && req.body.name.trim()) {
+                updateData.name = req.body.name;
+            }
+            if (req.body.age && req.body.age.trim()) {
+                updateData.age = req.body.age;
+            }
+            if (req.body.location && req.body.location.trim()) {
+                updateData.location = req.body.location;
+            }
+            if (req.body.introduction && req.body.introduction.trim()) {
+                updateData.introduction = req.body.introduction;
+            }
+            if (req.body.contact && req.body.contact.trim()) {
+                updateData.contact = req.body.contact;
+            }
+            if (req.body.newPassword && req.body.newPassword.trim()) {
+                updateData.newPassword = req.body.newPassword;
+            }
+            if (req.body.confirmPassword && req.body.confirmPassword.trim()) {
+                updateData.confirmPassword = req.body.confirmPassword;
+            }
+            // Check if a file was uploaded and include it in the update data
+            if (req.file && req.file.path) {
+                updateData.image = req.file.path;
+            }
+            // console.log('Write user profile information =>', req.body);
+            const wroteProfileIntoDB = await User.update( updateData,
+            {
+                where: { email: req.user.email },
+                //show the instances of updated rows
+                returning: true,
+            });
+            console.log('User profile updated successfully!');
+            return res.status(200).send({ 
+                message: 'Profile updated successfully!',
+                wroteUserProfileIntoDB : wroteProfileIntoDB[1][0],
+            });
+        }
+        catch(error){
+                console.error('Error updating profile:', error);
+                return res.status(500).send({ message: 'Server error. Please try again later.' });
+                }
+    },
 
-    async profile(req, res) {
+    async puppies(req, res) {
         console.log('User visited profile page!');
         try{
             const { name, age, location, introduction } = req.body;
@@ -285,8 +332,28 @@ module.exports = {
     async about(req, res) {
         res.status(200).send({ message: 'Welcome to the about page!' }); 
     },
-    //API for frontend retrieve data from database
-    async userProfileInformation(req, res) {
+    //API for frontend retrieve user profile from database
+    async retrieveUserProfileInformation(req, res) {
+        console.log('Retrieving user profile information...');
+        try{
+            const userProfileInformation = await User.findOne({
+                where: {
+                    id: req.user.id
+                }
+            });
+            // console.log('User profile information successfully retrieved =>',userProfileInformation.get());
+            return res.status(200).send({
+                message: `User profile information retrieved successfully!`,
+                userProfileInformation,
+            });
+        }
+        catch(err){
+            console.log('User profile information failed to retrieve!');
+            return res.status(500).send({message: `User profile information failed! ${err}`});
+        }
+    },
+    //pai for frontend retrieve puppy profile from database
+    async puppyProfileInformation(req, res) {
         console.log('Retrieving user profile information...');
         try{
             const userProfileInformation = await Dog.findOne({
@@ -442,7 +509,30 @@ module.exports = {
             console.log('Can not search single user!' + error.message);
             return res.status(500).send({message: `search single user failed!`});
         }
+    },
+    //create an event
+    async createEvent(req, res) {
+        try{
+            console.log('create event =>', req.body);
+            const createdEvent = await Event.create({
+                ownerId: req.user.id,
+                eventName: req.body.eventName,
+                creator: req.body.creator,
+                description: req.body.description,
+                location: req.body.location,
+                date: req.body.date,
+                contact: req.body.contact,
+                agreeTerms: req.body.agreeTerms,
+            });
+            console.log('Event created successfully!');
+            return res.status(200).send({
+                message: 'Event created successfully!',
+                createdEvent,
+            });
+        }catch(error){
+            console.log('Can not create an event!' + error.message);
+            return res.status(500).send({message: `create an event failed!`});
+        }
     }
-    
 
 }

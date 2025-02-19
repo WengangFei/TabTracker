@@ -4,23 +4,8 @@ import { ref, reactive } from "vue";
 export const useLoginAuthStore = defineStore("loginAuth", () => {
     const isAuthenticated = ref(false);
     const registeredFlg = ref(false);//identify is user registered
-    const loginUserInfo = reactive({
-        // email: "",  
-        // password: "",
-        // token: "",
-
-    });
-    let userProfileInfo = reactive({
-        name: "",
-        image: '',
-        introduction: "",
-        location: "",
-        age: "",
-        id: null,
-        ownerId: "",
-        createdAt: "",
-        updatedAt: "",
-    })
+    const loginUserInfo = reactive({});
+    let userProfileInfo = reactive({});
 
     const updateUserProfileInfo = (info) => {
         Object.assign(userProfileInfo, info);

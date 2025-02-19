@@ -37,7 +37,11 @@
                 </p> -->
             </div>
             <div class="flex ">
-                <nearby-users v-for="user in nearbyUsers" :key="user.id" :user="user"/>
+                <nearby-users 
+                    v-for="user in nearbyUsers" 
+                    :key="user.id" 
+                    :user="user"
+                />
             </div>
         </div>
     </v-container>
@@ -58,7 +62,7 @@ import { useLoginAuthStore } from '../stores/loginAuthStore';
 const nearbyUsers = ref([]);
 const loading = ref(true);
 const error = ref(null);
-
+const show = ref(true);
 const latitude = ref(null);
 const longitude = ref(null);
 const actualLocation = ref(null);

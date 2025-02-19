@@ -25,11 +25,24 @@ fs.readdirSync(__dirname)
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-// Set the associate models between table dogs and table users
+// one to many, one user can have many dogs
 if(db.User && db.Dog) {
+  //one to one
   db.Dog.belongsTo(db.User, { foreignKey: 'ownerId' });
+  //one to many
   db.User.hasMany(db.Dog, { foreignKey: 'ownerId' });
-}
+};
+//one to many, one user can have many events
+if(db.User && db.Event) {
+  db.Event.belongsTo(db.User, { foreignKey: 'ownerId' });
+  db.User.hasMany(db.Event, { foreignKey: 'ownerId' });
+};
+// many to many, one dog can have many events, one event can have many dogs
+if(db.Dog && db.DogEvent) {
+  db.Dog.belongsToMany(db.Event, { through: 'dog_events', foreignKey: 'puppyId' });
+  db.Event.belongsToMany(db.Dog, { through: 'dog_events', foreignKey: 'eventId' });
+};
+
 
 
 module.exports = db;

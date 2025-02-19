@@ -61,104 +61,118 @@ watch(() => loginAuthStore.userProfileInfo, () => {
 </script>
 
 <template>
-  <v-card>
-    <v-layout>
-      <v-navigation-drawer
-        expand-on-hover
-        rail
-        permanent
-        class="nav-drawer"
-      >
-        <v-list v-if="loginAuthStore.isAuthenticated">
-          <v-list-item>
-            <v-avatar size="45" class="mb-2">
-              <img :src="loginAuthStore.userProfileInfo.image ?
-                `${imageDomainPrefix}${loginAuthStore.userProfileInfo.image}` :
-                universalImage
-                 " alt="Dog" />
-            </v-avatar>
-            <v-list-item-title>
-              {{ loginAuthStore.userProfileInfo.name || 'Puppy' }}
-              <span :class="{ status: onlineStatus === 'Online' }">
-              {{ onlineStatus }}
-              </span>
-              </v-list-item-title>
-            <v-list-item-subtitle class="email">
-              {{ loginAuthStore.loginUserInfo.email || 'Email' }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle class="online">
-              Registered on:{{ formatDate(loginAuthStore.loginUserInfo.createdAt) || 'Registered date' }}
-            </v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
-
-        <v-divider></v-divider>
-
-        <v-list density="compact" nav>
-          <v-list-item 
-            prepend-icon="mdi-home" 
-            title="Home" 
-            value="home"
-            to="/home"
-          ></v-list-item>
-          <v-list-item 
-            prepend-icon="mdi-dog" 
-            title="Profile" 
-            value="myfiles"
-            to="/profile"
-            v-if="loginAuthStore.isAuthenticated"
-          ></v-list-item>
-          <v-list-item 
-            prepend-icon="mdi-cog" 
-            title="Setting" 
-            value="settings"
-            to="/setting"
-            v-if="loginAuthStore.isAuthenticated"></v-list-item>
-            <v-list-item 
-            prepend-icon="mdi-magnify-scan" 
-            title="Search" 
-            value="search"
-            to="/search"
-            v-if="loginAuthStore.isAuthenticated"></v-list-item>
-          <v-list-item 
-            prepend-icon="mdi-information" 
-            title="About" 
-            value="about"
-            to="/about"></v-list-item>
-          <v-list-item
-            prepend-icon="mdi-logout-variant" 
-            title="" 
-            value="logout"
-            v-if="loginAuthStore.isAuthenticated"
-            >
-              <LogoutPage />
-            </v-list-item>
-             
-        </v-list>
-      </v-navigation-drawer>
-
-      <v-main 
-        class=" min-h-screen 
-                bg-[url(/src/assets/dogPark.png)] 
-                bg-center"  
+  <v-app>
+    <v-card>
+      <v-layout>
+        <v-navigation-drawer
+          expand-on-hover
+          rail
+          permanent
+          class="nav-drawer"
         >
-          <div class="bg-yellow-200 fixed w-full h-20 top-0 py-4 px-12">
-            Header
-          </div>
-          <div class="flex space-x-2 mt-20 p-4 justify-center" >
-            <div v-if="loginAuthStore.isAuthenticated" class="bg-red-200 p-4 w-1/8"></div>
-            <div class="bg-green-200 p-4 w-full">
-              <router-view v-slot="{ Component }">
-                <keep-alive>
-                  <component :is="Component" /></keep-alive>
-              </router-view>
+          <v-list v-if="loginAuthStore.isAuthenticated">
+            <v-list-item>
+              <v-avatar size="45" class="mb-2">
+                <img :src="loginAuthStore.userProfileInfo.image ?
+                  `${imageDomainPrefix}${loginAuthStore.userProfileInfo.image}` :
+                  universalImage
+                    " alt="Dog" />
+              </v-avatar>
+              <v-list-item-title>
+                {{ loginAuthStore.userProfileInfo.name || 'Puppy' }}
+                <span :class="{ status: onlineStatus === 'Online' }">
+                {{ onlineStatus }}
+                </span>
+                </v-list-item-title>
+              <v-list-item-subtitle class="email">
+                {{ loginAuthStore.loginUserInfo.email || 'Email' }}
+              </v-list-item-subtitle>
+              <v-list-item-subtitle class="online">
+                Registered on:{{ formatDate(loginAuthStore.loginUserInfo.createdAt) || 'Registered date' }}
+              </v-list-item-subtitle>
+            </v-list-item>
+          </v-list>
+
+          <v-divider></v-divider>
+
+          <v-list density="compact" nav>
+            <v-list-item 
+              prepend-icon="mdi-home" 
+              title="Home" 
+              value="home"
+              to="/home"
+            ></v-list-item>
+            <v-list-item 
+              prepend-icon="mdi-account" 
+              title="Profile" 
+              value="profile"
+              to="/user_profile"
+              v-if="loginAuthStore.isAuthenticated"
+            ></v-list-item>
+            <v-list-item 
+              prepend-icon="mdi-dog" 
+              title="Puppies" 
+              value="puppies"
+              to="/puppies"
+              v-if="loginAuthStore.isAuthenticated"
+            ></v-list-item>
+            <v-list-item 
+              prepend-icon="mdi-cog" 
+              title="Setting" 
+              value="settings"
+              to="/setting"
+              v-if="loginAuthStore.isAuthenticated"></v-list-item>
+            <v-list-item 
+              prepend-icon="mdi-magnify-scan" 
+              title="Search" 
+              value="search"
+              to="/search"
+              v-if="loginAuthStore.isAuthenticated"></v-list-item>
+            <v-list-item 
+              prepend-icon="mdi-calendar-edit" 
+              title="Create_Events" 
+              value="create_events"
+              to="/create_events"
+              v-if="loginAuthStore.isAuthenticated"></v-list-item>
+            <v-list-item 
+              prepend-icon="mdi-information" 
+              title="About" 
+              value="about"
+              to="/about"></v-list-item>
+            <v-list-item
+              prepend-icon="mdi-logout-variant" 
+              title="" 
+              value="logout"
+              v-if="loginAuthStore.isAuthenticated"
+              >
+                <LogoutPage />
+              </v-list-item>
+                
+          </v-list>
+        </v-navigation-drawer>
+
+        <v-main 
+          class=" min-h-screen 
+                  bg-[url(/src/assets/dogPark.png)] 
+                  bg-center"  
+          >
+            <div class="bg-yellow-200 fixed w-full h-20 top-0 py-4 px-12">
+              Header
             </div>
-            <div v-if="loginAuthStore.isAuthenticated" class="bg-yellow-200 p-4 w-1/8"></div>
-          </div>
-        
-      </v-main>
-    </v-layout>
-  </v-card>
+            <div class="flex space-x-2 mt-20 p-4 justify-center" >
+              <div v-if="loginAuthStore.isAuthenticated" class="bg-red-200 p-4 w-1/8"></div>
+              <div class="bg-green-200 p-4 w-full">
+                <router-view v-slot="{ Component }">
+                  <keep-alive>
+                    <component :is="Component" /></keep-alive>
+                </router-view>
+              </div>
+              <div v-if="loginAuthStore.isAuthenticated" class="bg-yellow-200 p-4 w-1/8"></div>
+            </div>
+        </v-main>
+      </v-layout>
+    </v-card>
+</v-app>
 </template>
 
 <style lang="scss" scoped>
