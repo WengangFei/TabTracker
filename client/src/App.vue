@@ -57,7 +57,8 @@ watch(() => loginAuthStore.userProfileInfo, () => {
   console.log('user profile info changed =>',loginAuthStore.userProfileInfo);
   profileUpdateFlag.value = profileUpdateFlag.value ? false : true;
 },{ deep: true });// deep watch entire loginAuthStore.userProfileInfo object when profile updated
-// console.log('login user info =>',loginAuthStore.loginUserInfo);
+console.log('login user info =>',`${imageDomainPrefix}${loginAuthStore.userProfileInfo.image}`);
+console.log('user profo=>',loginAuthStore.userProfileInfo);
 </script>
 
 <template>

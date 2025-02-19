@@ -53,9 +53,9 @@ const router = createRouter({
             meta: { requiresAuth: true },
         },
         {
-            path: '/puppies',
-            name: 'puppies',
-            component: () => import('../components/PuppiesView.vue'),
+            path: '/puppies_profile',
+            name: 'puppies_profile',
+            component: () => import('../components/PuppiesProfileView.vue'),
             meta: { requiresAuth: true },
         },
         {

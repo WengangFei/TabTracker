@@ -201,6 +201,7 @@ module.exports = {
             if (req.file && req.file.path) {
                 updateData.image = req.file.path;
             }
+            console.log('Update data =>', req.file);
             // console.log('Write user profile information =>', req.body);
             const wroteProfileIntoDB = await User.update( updateData,
             {

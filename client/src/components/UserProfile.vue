@@ -193,8 +193,8 @@ watch(submitFormInfo, async() => {
 });
 //check form validation
 const checkFormErrors = async () => {
-    const { valid,errors } = await form.value.validate();
-    if (valid) return true;
+    const { valid } = await form.value.validate();
+    if (valid) return valid;
     return false;
 }
  const submitForm = async () => {
@@ -209,7 +209,6 @@ const checkFormErrors = async () => {
     console.log('update user profile info =>',loginAuthStore.userProfileInfo);
     
  };  
- 
  </script>
  
  <style lang="scss" scoped>

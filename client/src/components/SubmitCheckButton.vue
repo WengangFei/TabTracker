@@ -27,7 +27,7 @@
             <v-spacer></v-spacer>
   
             <v-btn v-if="!errors" @click="dialog = false">
-              {{ errors ? 'Back' : 'Disagree' }}
+              {{ errors ? 'Back' : 'Submit' }}
             </v-btn>
   
             <v-btn v-if="!errors" @click="handleSubmit" :disabled="errors" color="warning">
@@ -67,7 +67,6 @@ const { action, isActive, fun, formUpdated } = defineProps({
 
 //go back to profile page
 const goBackToProfilePage = () => {
-    window.location.reload();
 }
 const text = ref('All new information looks good, click button to update.');
 const title = ref('Your profile is about to be updated.');
@@ -84,17 +83,21 @@ watch(() =>formUpdated, () => {
 //check form validation
 const checkValidation = async () => {
     const isFormValid = await fun();
-    // console.log('fun =>',isFormValid);
+    console.log('fun =>',isFormValid);
     if(!isFormValid){
         text.value = 'Please fix all error fields.';
         title.value = 'You got errors!';
         color.value= 'warning';
         errors.value = true;
+    }else{
+      errors.value = false;
+      color.value = 'success';
+      text.value = 'All new information looks good, click button to update.';
+      title.value = 'Your profile is about to be updated.'
     }
 }
 const handleSubmit = () => {
     action()
-    window.location.reload();
     errors.value = true;
 }
 

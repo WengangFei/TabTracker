@@ -18,8 +18,8 @@ require('./routes')(app);
 //connect to database
 require('./db/dbConfig')
 //The express.static middleware serves the uploaded files so that they can be accessed via URLs (e.g., http://localhost:3000/images/myfile.jpg).
-app.use('/src/images', express.static(path.join(__dirname, 'images')));
-console.log(path.join(__dirname, '/uploads'));
+app.use('/images/users', express.static(path.join(__dirname, '../images/users')));
+console.log('path =>',__dirname, '/');
 
 //create the data base and start the server
 sequelize.sync().then(
