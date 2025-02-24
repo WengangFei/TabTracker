@@ -57,8 +57,8 @@ watch(() => loginAuthStore.userProfileInfo, () => {
   console.log('user profile info changed =>',loginAuthStore.userProfileInfo);
   profileUpdateFlag.value = profileUpdateFlag.value ? false : true;
 },{ deep: true });// deep watch entire loginAuthStore.userProfileInfo object when profile updated
-console.log('login user info =>',`${imageDomainPrefix}${loginAuthStore.userProfileInfo.image}`);
-console.log('user profo=>',loginAuthStore.userProfileInfo);
+// console.log('login user info =>',`${imageDomainPrefix}${loginAuthStore.userProfileInfo.image}`);
+// console.log('user profo=>',loginAuthStore.userProfileInfo);
 </script>
 
 <template>
@@ -114,7 +114,7 @@ console.log('user profo=>',loginAuthStore.userProfileInfo);
               prepend-icon="mdi-dog" 
               title="Puppies" 
               value="puppies"
-              to="/puppies"
+              to="/puppies_profile"
               v-if="loginAuthStore.isAuthenticated"
             ></v-list-item>
             <v-list-item 

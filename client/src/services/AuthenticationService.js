@@ -73,9 +73,27 @@ const AuthenticationService = {
             return error;
         }
     },
-    puppies: async (credentials ) => {
+    //retrieve puppies profiles
+    retrieveUserPuppiesProfileInformation: async () => {
         try {
-            return await api.post("/puppies", credentials,{
+            const response = await api.get("/api/retrieve_puppies_profile");
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
+    //retrieve single puppy profile
+    retrieveSinglePuppiesProfileInformation: async (id) => {
+        try {
+            const response = await api.get(`/api/retrieve_single_puppy_profile/${id}`);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    },
+    createPuppiesProfile: async (credentials ) => {
+        try {
+            return await api.post("/create_puppy_profile", credentials,{
                 //overwrite the preset header for save image file into DB
                 headers:{
                     'Content-Type': 'multipart/form-data',
@@ -83,6 +101,23 @@ const AuthenticationService = {
                 }
             });
            
+        } catch (error) {
+            return error;
+        }
+    },
+    //updating a single puppy profile
+    updateSinglePuppyProfile: async (data) => {
+        try {
+            const response = await api.post("/update_single_puppy_profile",data,
+                {
+                //overwrite the preset header for save image file into DB
+                headers:{
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                }
+            }
+        );
+            return response;
         } catch (error) {
             return error;
         }

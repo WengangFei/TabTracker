@@ -32,12 +32,31 @@ module.exports = (app) => {
         AuthenticationController.authenticateToken,
         AuthenticationController.about
     );
-    //profile page
-    app.post('/puppies', 
+    //retrieve puppies profile
+    app.get('/api/retrieve_puppies_profile',
         AuthenticationController.authenticateToken,
-        //upload image middleware
+        AuthenticationController.retrieveUserPuppiesProfileInformation
+    );
+    //retrieve single puppy profile
+    app.get('/api/retrieve_single_puppy_profile/:id',
+        AuthenticationController.authenticateToken,
+        AuthenticationController.retrieveSinglePuppiesProfileInformation
+    );
+    //create puppy profile 
+    app.post('/create_puppy_profile', 
+        AuthenticationController.authenticateToken,
+        JoiPolicies.createPuppiesProfile,
+        // upload image middleware
         upload.single('image'),
-        AuthenticationController.puppies
+        AuthenticationController.createPuppiesProfile
+    );
+    //update single puppy profile
+    app.post('/update_single_puppy_profile',
+        AuthenticationController.authenticateToken,
+        // JoiPolicies.updateSinglePuppyProfile,
+        // upload image middleware
+        upload.single('image'),
+        AuthenticationController.updateSinglePuppyProfile
     );
     app.post('/comparePassword', 
         AuthenticationController.comparePassword

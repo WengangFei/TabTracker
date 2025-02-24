@@ -11,83 +11,129 @@
          >
         <v-card-text>
              <v-form ref="form">
-                 <v-text-field
-                 ref="Name"
-                 v-model="submitFormInfo.name"
-                 :rules="[
-                    (v) => !v || v.length >= 3 ||
-                    'Name must be at least 3 characters' 
-                    ]"
-                 label="User's Name"
-                 placeholder="Puppy"
-                 ></v-text-field>
-                 <v-text-field
-                     ref="Age"
-                     v-model="submitFormInfo.age"
-                     :rules="[
-                         (v) => !v || /^\d+$/.test(v) && parseInt(v) > 0 || 'Please enter a valid number greater than 0'
-                     ]"
-                     label="Age"
-                     placeholder="age"
-                 >
-                 </v-text-field>
-                 <v-text-field
-                    v-model="submitFormInfo.contact"
-                    color="primary"
-                    label="Contact"
-                    :rules="[
-                        (v) => !v || v.length >= 3 ||
-                        'Contact is required,phone number or other social media.' 
-                        ]"
-                ></v-text-field>
-                <v-text-field
-                    label="Enter current Password for updating password"
-                    type="password"
-                    v-model="currentPassword"
-                    :rules="currentPasswordRules"
-                    validate-on="blur"
-                ></v-text-field>
-                <v-text-field
-                    label="New Password"
-                    type="password"
-                    v-model="submitFormInfo.newPassword"
-                    :rules="passwordRules"
-                    validate-on="blur"
-                    :disabled="fieldIsDisabled"
-                ></v-text-field>
-                <v-text-field
-                    label="Confirm Password"
-                    type="password"
-                    v-model="submitFormInfo.confirmPassword"
-                    :rules="[confirmPasswordRule]"
-                    validate-on="blur"
-                    :disabled="fieldIsDisabled"
-                ></v-text-field>
-                 <v-text-field
-                     ref="Location"
-                     v-model="submitFormInfo.location"
-                     :rules="[
-                         (v) => !v || v.length >= 3 || 'Location must be at least 3 characters'
-                     ]"
-                     label="Location"
-                     placeholder="123 Main St, Anytown, USA"
-                 ></v-text-field>
-                 <v-textarea
-                     v-model="submitFormInfo.introduction"
-                     label="User's Introduction"
-                     placeholder="Write something about your puppy"
-                     :counter="200"
-                     :rules="[
-                         v => !v || v.split(' ').length <= 200 || 'Limit is 200 words']"
-                 ></v-textarea>
-                 <!-- Image upload field -->
-                 <v-file-input
-                     v-model="submitFormInfo.image"
-                     label="Upload Profile Image"
-                     accept="image/* "
-                     :error-messages="imageErrorMessages"
-                 ></v-file-input>
-            </v-form>    
+                <v-row>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <v-text-field
+                            ref="Name"
+                            v-model="submitFormInfo.name"
+                            :rules="[
+                                (v) => !v || v.length >= 3 ||
+                                'Name must be at least 3 characters' 
+                                ]"
+                            label="User's Name"
+                            placeholder="Puppy"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <v-text-field
+                            ref="Age"
+                            v-model="submitFormInfo.age"
+                            :rules="[
+                                (v) => !v || /^\d+$/.test(v) && parseInt(v) > 0 || 'Please enter a valid number greater than 0'
+                            ]"
+                            label="Age"
+                            placeholder="age"
+                        >
+                        </v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <v-text-field
+                            v-model="submitFormInfo.contact"
+                            color="primary"
+                            label="Contact"
+                            :rules="[
+                                (v) => !v || v.length >= 3 ||
+                                'Contact is required,phone number or other social media.' 
+                                ]"
+                        ></v-text-field>
+                    </v-col> 
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <v-text-field
+                            label="Enter current Password "
+                            type="password"
+                            v-model="currentPassword"
+                            :rules="currentPasswordRules"
+                            validate-on="blur"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <v-text-field
+                            label="New Password"
+                            type="password"
+                            v-model="submitFormInfo.newPassword"
+                            :rules="passwordRules"
+                            validate-on="blur"
+                            :disabled="fieldIsDisabled"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <v-text-field
+                            label="Confirm Password"
+                            type="password"
+                            v-model="submitFormInfo.confirmPassword"
+                            :rules="[confirmPasswordRule]"
+                            validate-on="blur"
+                            :disabled="fieldIsDisabled"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <v-text-field
+                            ref="Location"
+                            v-model="submitFormInfo.location"
+                            :rules="[
+                                (v) => !v || v.length >= 3 || 'Location must be at least 3 characters'
+                            ]"
+                            label="Location"
+                            placeholder="123 Main St, Anytown, USA"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    >
+                        <!-- Image upload field -->
+                        <v-file-input
+                            v-model="submitFormInfo.image"
+                            label="Upload Profile Image"
+                            accept="image/* "
+                        ></v-file-input>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="12"
+                    >
+                        <v-textarea
+                            v-model="submitFormInfo.introduction"
+                            label="User's Introduction"
+                            placeholder="Write something about your puppy"
+                            :counter="200"
+                            :rules="[
+                                v => !v || v.split(' ').length <= 200 || 'Limit is 200 words']"
+                        ></v-textarea>
+                    </v-col>
+                </v-row>
+            </v-form>
         </v-card-text>
             <v-card-actions>
                 <v-btn variant="text">
@@ -136,7 +182,7 @@
      confirmPassword: '',
      image: null
  });
- const imageErrorMessages = ref([]);
+
  const form = ref(null);
  //Fetching data from DB
  onBeforeMount(

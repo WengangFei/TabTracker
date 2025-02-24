@@ -59,6 +59,7 @@
             <v-date-input
                 v-model="formInfo.date"
                 label="Select a date"
+                :min="today"
                 max-width="365"
                 :rules="[(v) => !!v || 'Date is required']"
             ></v-date-input>
@@ -68,30 +69,36 @@
                 label="I agree to site terms and conditions"
                 :rules="[v => !!v || 'You must agree to continue!']"
             ></v-checkbox>
-            
             </v-container>
-
-            <v-divider></v-divider>
-
             <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn 
+            <!-- <v-btn 
                 variant="flat" 
                 color="success"
                 @click="submitForm"
+                :disabled="preventSubmitEmptyForm"
                 >
                 Create
                 <v-icon icon="mdi-chevron-right" end></v-icon>
-            </v-btn>
+            </v-btn> -->
+            <CustomizeButton 
+                variant="flat" 
+                color="success"
+                :action="submitForm"
+                :disabled="preventSubmitEmptyForm"
+                content="Create"
+                :error="eventError"
+            />
             </v-card-actions>
         </v-card>
     </v-form>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import AuthenticationService from '../services/AuthenticationService';
+import CustomizeButton from './CustomizeButton.vue';
 
  const formInfo = reactive({
      eventName: '',
@@ -102,23 +109,42 @@ import AuthenticationService from '../services/AuthenticationService';
      date: null,
      agreeTerms: false
  })
-
- const form = ref(null);
-
+// const isEventCreated = ref(false);
+const form = ref(null);
+const eventError = ref(null);
+const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
 //submit form
 const submitForm = async () => {
     const { valid } = await form.value.validate();
     if (valid) {
-        try {
-            const response = await AuthenticationService.createEvent(formInfo);  
-            console.log('response =>',response.data.message);
-        } catch (error) {
-            console.log(error.message);
+         
+        const response = await AuthenticationService.createEvent(formInfo);  
+        if(response.status === 200){
+            console.log('Event created successfully =>',response);
+            //clear the form
+            formInfo.eventName = null;
+            formInfo.location = null;
+            formInfo.description = null;
+            formInfo.creator = null;
+            formInfo.contact = null;
+            formInfo.date = null;
+            formInfo.agreeTerms = null;
         }
+        else{
+            console.log('event create failed!');
+            console.log('response =>',response);
+            eventError.value = response.response.data.message;
+        } 
+        
+        
     }else{
         console.log('Form is not valid');
     }
 }
+//prevent submit empty form
+const preventSubmitEmptyForm = computed(() => {
+    return !formInfo.eventName || !formInfo.location || !formInfo.description || !formInfo.creator || !formInfo.contact || !formInfo.date || !formInfo.agreeTerms
+})
 
 </script>
 

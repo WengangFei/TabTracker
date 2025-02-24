@@ -3,16 +3,22 @@ const fs = require('fs');
 const path = require('path');
 
 //create the uploads folder if it doesn't exist
-const uploadsDir = path.join('images','/users');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir,{ recursive: true });
+const usersDir = path.join('images','users');
+const puppiesDir = path.join('images','puppies');
+if (!fs.existsSync(usersDir)) {
+    fs.mkdirSync(usersDir,{ recursive: true });
+}
+if(!fs.existsSync(puppiesDir)) {
+    fs.mkdirSync(puppiesDir,{ recursive: true });
 }
 //set up storage engine for multer
 const storage = multer.diskStorage({
     //set up storage config
       destination: (req, file, cb) => {
+        // console.log('image upload =>',file);
         // Set the destination folder to store the uploaded files
-          cb(null, uploadsDir);
+          const destination = req.body.imageUploadType === 'users' ? usersDir : puppiesDir;
+          cb(null, destination);
       },
       filename: (req, file, cb) => {
         // Use original file name or custom naming convention

@@ -3,29 +3,48 @@
     <div class="pa-4 text-center">
         <v-dialog
         v-model="dialog"
-        max-width="500"
+        max-width="400"
         >
             <template v-slot:activator="{ props: activatorProps }">
-                <v-btn 
-                    color="secondary" 
-                    :size="'large'"
-                    class="text-none font-weight-regular"
-                    variant="tonal"
-                    text=""
-                    v-bind="activatorProps"
-                    >
-                    <v-icon left>mdi-plus-box</v-icon> 
-                        <span class="mx-1">Add a Puppy</span>
-                    <v-icon right>mdi-dog</v-icon>
-                    <span class="text-red-500 font-bold ml-1">
-                        {{ puppies.length }}
-                    </span>
-                </v-btn>
+                <v-card v-bind="activatorProps" @click="loadProfile(puppy.id)">
+                    <!-- Avatar for profile picture -->
+                    <v-avatar size="50" class="m-2">
+                        <img :src="imageSrc" alt="Puppy">
+                    </v-avatar>
+                    <div class="bg-lime-200 p-2">
+                         <!-- Card Title (Name) -->
+                        <v-card-title class="mt-n4">{{ puppy.name }}</v-card-title>
+
+                        <!-- Card Subtitle (Position or Role) -->
+                        <v-card-subtitle class="text-center mt-n2">Age: {{ puppy.age }}
+                            <div>
+                                <v-icon class="me-1" icon="mdi-heart" size="x-small" color="red"></v-icon>
+                                <span class="subheading me-2 text-xs">256</span>
+                                <span class="me-1">|</span>
+                                <v-icon class="me-1" icon="mdi-share-variant" size="x-small" color="blue"></v-icon>
+                                <span class="subheading text-xs text-blue-500">45</span>
+                            </div>
+                            
+                        </v-card-subtitle>
+
+                    </div>
+                   
+                    <!-- Card Text (Short Bio or Description) -->
+                    <!-- <v-card-text class="text-center">
+                        none
+                    </v-card-text> -->
+
+                    <!-- Card Actions (Button or Links) -->
+                    <!-- <v-card-actions class="justify-center">
+                        <v-btn text color="primary" href="https://github.com/johndoe" target="_blank">View Profile</v-btn>
+                    </v-card-actions> -->
+                </v-card>
+
             </template>
 
             <v-card
                 prepend-icon="mdi-dog"
-                title="Add Profile"
+                title="Puppy's Profile"
             >
                 <v-form ref="form" class="p-6">
                 <v-row dense>
@@ -132,39 +151,26 @@
                             </v-card-text>
                             <v-card-actions>
                             <v-btn @click="dialogVisible = false" color="red">Cancel</v-btn>
-                            <v-btn @click="submitForm" color="">Submit</v-btn>
+                            <v-btn @click="submitForm(puppy.id)" color="">Submit</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <div class="place-items-center mt-12">
-            <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-6/12"  >
-                <SinglePuppyProfile 
-                    v-for="puppy in puppies"
-                    :key="puppy.id"
-                    :puppy = puppy
-                    @reloadProfile="reloadProfilePage"
-                />
-            </div>
-        </div>
-        
-        
   </div>
 </template>
 
 <script setup>
-import { onBeforeMount, ref, reactive, computed, watch } from 'vue';
+import { defineEmits, ref, reactive, computed, defineProps } from 'vue';
 import { useLoginAuthStore } from '../stores/loginAuthStore';
 import AuthenticationService from '../services/AuthenticationService';
-import SinglePuppyProfile from './SinglePuppyProfile.vue';
 
 
 const loginUserInformationStore = useLoginAuthStore();
 const puppies = ref([]);
+const universalImage = ref('https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg');
 const dialog = ref(false);
-const isNewProfileCreated = ref(false);
 const dialogVisible = ref(false);
 const submitFormInfo = reactive({
     name: '',
@@ -174,6 +180,13 @@ const submitFormInfo = reactive({
     introduction: '',
     image: null
 })
+//define prop
+const { puppy } = defineProps({
+    puppy: {
+        type: Object,
+        required: true
+    }
+})
 //check form validation
 const checkFormErrors = computed(() => {
 
@@ -182,46 +195,35 @@ const checkFormErrors = computed(() => {
     return nameValid && ageValid;
 })
 //submit form
-const submitForm = async () => {
+const submitForm = async (id) => {
     dialogVisible.value = false;
     dialog.value = false;
-    const response = await AuthenticationService.createPuppiesProfile({...submitFormInfo,imageUploadType:'puppies'});
-    console.log('submit form info =>',submitFormInfo);
+    const response = await AuthenticationService.updateSinglePuppyProfile({...submitFormInfo,imageUploadType:'puppies',puppyId:id});
+    // console.log('submit form info =>',submitFormInfo);
+    // console.log('response =>',response);
+    // window.location.reload();
+    emit('reloadProfile');
+}
+
+// fetch user's puppies information
+const loadProfile = async (id) => {
+    const response = await AuthenticationService.retrieveSinglePuppiesProfileInformation(id);
+    console.log('single puppy profile response =>',response);
     if(response.status === 200){
-        console.log('puppy profile created successfully!');
-        isNewProfileCreated.value = isNewProfileCreated.value ? false : true;
-        //clear the form
-        submitFormInfo.name = '';
-        submitFormInfo.age = '';
-        submitFormInfo.size = '';
-        submitFormInfo.type = '';
-        submitFormInfo.introduction = '';
-        console.log('response =>',response);
-    }else{
-        console.log('puppy profile created failed!');
+        submitFormInfo.name = response.data.singlePuppyProfileInfo.name;
+        submitFormInfo.age = response.data.singlePuppyProfileInfo.age;
+        submitFormInfo.size = response.data.singlePuppyProfileInfo.size;
+        submitFormInfo.type = response.data.singlePuppyProfileInfo.type;
+        submitFormInfo.introduction = response.data.singlePuppyProfileInfo.introduction;
     }
-}
-// console.log('login user info =>',loginUserInformationStore.loginUserInfo);
-//fetch user's puppies information
-onBeforeMount(
-    async () => {
-        //fetch user's puppies information
-        const response = await AuthenticationService.retrieveUserPuppiesProfileInformation();
-        console.log('response for puppies amount =>',response);
-        puppies.value = response.data.puppiesProfileInformation;
-    }
-);
-//update the profile page after a new puppy added
-watch(isNewProfileCreated,async ()=>{
-    console.log('new profile page updated!')
-    //update profile page after new puppy added
-    const response = await AuthenticationService.retrieveUserPuppiesProfileInformation();
-    puppies.value = response.data.puppiesProfileInformation;
-});
+};
 //reload the profile page after single puppy profile updated
-const reloadProfilePage = () =>{
-    isNewProfileCreated.value = isNewProfileCreated.value ? false : true;
-}
+const emit = defineEmits();
+//updating image src
+const imageSrc = computed(() => {
+    return puppy.image ? import.meta.env.VITE_DOMAIN_PATH + puppy.image : universalImage.value
+})
+
 </script>
 
 <style lang="scss" scoped>
